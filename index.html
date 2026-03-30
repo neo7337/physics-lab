@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physics Lab</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #7eb8f7, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      margin-top: 0.6rem;
+      color: #888;
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .card {
+      background: #13131a;
+      border: 1px solid #2a2a38;
+      border-radius: 12px;
+      padding: 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .card:hover {
+      border-color: #7eb8f7;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(126, 184, 247, 0.12);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #d0d0e0;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .card .tag {
+      margin-top: auto;
+      padding-top: 0.75rem;
+      font-size: 0.75rem;
+      color: #7eb8f7;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    footer {
+      margin-top: 4rem;
+      color: #444;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Physics Lab</h1>
+    <p>Interactive browser-based physics simulations</p>
+  </header>
+
+  <main class="grid">
+
+    <a class="card" href="double-slit/index.html">
+      <div class="card-icon">〰️</div>
+      <h2>Young's Double-Slit Experiment</h2>
+      <p>Visualize wave interference from two Huygens point sources in real time, with exact intensity calculations including the single-slit envelope.</p>
+      <span class="tag">Wave Optics</span>
+    </a>
+
+    <!-- Add more experiment cards here -->
+
+  </main>
+
+  <footer>
+    <p>physics-lab &mdash; no build step, no dependencies</p>
+  </footer>
+
+</body>
+</html>

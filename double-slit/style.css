@@ -56,6 +56,20 @@ header .subtitle {
 .docs-link:hover {
   background: #58a6ff18;
 }
+.back-link {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.back-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 
 /* ─── Main Layout ───────────────────────────────────────────────────────── */
 main {
