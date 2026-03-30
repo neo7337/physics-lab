@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Works — Young's Double Slit Visualizer</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+
+  <!-- Sidebar nav -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">〰</span>
+      <span>Double Slit</span>
+    </div>
+    <ul>
+      <li><a href="#overview"        class="active">Overview</a></li>
+      <li><a href="#history">Historical Background</a></li>
+      <li><a href="#wave-nature">Wave Nature of Light</a></li>
+      <li><a href="#setup">Experimental Setup</a></li>
+      <li><a href="#path-difference">Path Difference</a></li>
+      <li><a href="#interference">Interference Condition</a></li>
+      <li><a href="#intensity">Intensity Formula</a></li>
+      <li><a href="#single-slit">Single-Slit Envelope</a></li>
+      <li><a href="#fringe-spacing">Fringe Spacing</a></li>
+      <li><a href="#wavelength-color">Wavelength &amp; Color</a></li>
+      <li><a href="#how-sim-works">How the Sim Works</a></li>
+      <li><a href="#controls-guide">Controls Guide</a></li>
+      <li><a href="#experiments">Try These</a></li>
+    </ul>
+    <a href="index.html" class="sidebar-cta">Open Simulator &rarr;</a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="content">
+
+    <div class="page-header">
+      <h1>Young's Double Slit Experiment</h1>
+      <p class="lead">A complete guide to the physics, mathematics, and implementation of the interactive visualizer.</p>
+      <a href="index.html" class="btn-primary">Open the Simulator &rarr;</a>
+      <div class="open-source-bar">
+        <!-- TODO: replace with your actual repository URL -->
+        <a href="https://github.com/your-username/double-slit" target="_blank" rel="noopener">
+          <svg class="footer-gh-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+              .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+              -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27
+              c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+              0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          View on GitHub
+        </a>
+        <span class="open-source-divider">&middot;</span>
+        <span>MIT License</span>
+        <span class="open-source-divider">&middot;</span>
+        <span>Vanilla JS &middot; No dependencies</span>
+      </div>
+    </div>
+
+    <!-- ── Overview ─────────────────────────────────────────────────────────── -->
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>
+        Young's Double Slit experiment is one of the most important experiments in the history of physics.
+        It demonstrates conclusively that light behaves as a <strong>wave</strong>, producing an
+        <em>interference pattern</em> — alternating bright and dark bands — when passed through two
+        narrow slits. The same effect is observed with electrons, neutrons, and even large molecules,
+        making it a cornerstone demonstration of <strong>wave–particle duality</strong>.
+      </p>
+      <div class="callout callout-blue">
+        <strong>Key insight:</strong> When two waves meet, they either reinforce each other
+        (constructive interference → bright fringe) or cancel each other out
+        (destructive interference → dark fringe). The pattern you see on the screen is a
+        permanent record of where each type of interference occurs.
+      </div>
+    </section>
+
+    <!-- ── History ───────────────────────────────────────────────────────────── -->
+    <section id="history">
+      <h2>Historical Background</h2>
+      <p>
+        In <strong>1801</strong>, Thomas Young performed his famous experiment by shining sunlight
+        through a pinhole and then through two closely spaced slits onto a screen. The resulting
+        alternating light and dark bands were inexplicable under Newton's corpuscular (particle) theory
+        of light, but were perfectly predicted by Huygens' wave theory.
+      </p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="tl-year">1678</div>
+          <div class="tl-text">Huygens proposes wave theory of light; every point on a wavefront is a source of secondary wavelets.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">1704</div>
+          <div class="tl-text">Newton publishes <em>Opticks</em>, arguing light is a stream of particles (corpuscles).</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">1801</div>
+          <div class="tl-text">Thomas Young demonstrates the double-slit interference pattern, reviving the wave theory.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">1905</div>
+          <div class="tl-text">Einstein explains the photoelectric effect using photons — light also has particle properties.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">1927</div>
+          <div class="tl-text">Davisson &amp; Germer demonstrate electrons produce the same interference pattern — wave–particle duality confirmed.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">1999</div>
+          <div class="tl-text">C₆₀ fullerene molecules (60 carbon atoms) show double-slit interference — quantum weirdness at a macro scale.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Wave Nature ────────────────────────────────────────────────────────── -->
+    <section id="wave-nature">
+      <h2>Wave Nature of Light</h2>
+      <p>
+        A <strong>wave</strong> is a periodic disturbance that carries energy through space. For light,
+        this disturbance is oscillating electric and magnetic fields. Every wave has:
+      </p>
+      <div class="properties-grid">
+        <div class="prop-card">
+          <div class="prop-symbol">λ</div>
+          <div class="prop-name">Wavelength</div>
+          <div class="prop-desc">Distance between successive crests. Visible light: 380–750 nm. Determines color.</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-symbol">f</div>
+          <div class="prop-name">Frequency</div>
+          <div class="prop-desc">Number of oscillations per second (Hz). Related to energy: E = hf.</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-symbol">A</div>
+          <div class="prop-name">Amplitude</div>
+          <div class="prop-desc">Peak displacement of the wave. Intensity ∝ A².</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-symbol">φ</div>
+          <div class="prop-name">Phase</div>
+          <div class="prop-desc">Position within the oscillation cycle (0–2π radians). Phase difference between two waves determines whether they add or cancel.</div>
+        </div>
+      </div>
+      <p>
+        The key property enabling the double-slit effect is <strong>coherence</strong>: both slits must
+        be illuminated by light of the same wavelength and a stable phase relationship. In practice this
+        is achieved by using a single monochromatic source (e.g. a laser) placed far away, or by passing
+        light through a single slit first.
+      </p>
+    </section>
+
+    <!-- ── Setup ─────────────────────────────────────────────────────────────── -->
+    <section id="setup">
+      <h2>Experimental Setup</h2>
+      <p>The experiment has three main components:</p>
+
+      <div class="diagram-box">
+        <pre class="ascii-diagram">
+  Monochromatic          Barrier with                Detection
+  Light Source           Two Slits                   Screen
+       │                    │   ↑                       │
+       │   plane wave       │  Slit 1 (gap = a)  ╲     │
+  ~~~~►│~~~~~~~~~~~~~~~~~~~~│                     ╲~~~~│  bright
+  ~~~~►│~~~~~~~~~~~~~~~~~~~~│                      ────│  fringe
+  ~~~~►│~~~~~~~~~~~~~~~~~~~~│                     ╱~~~~│  pattern
+       │                    │  Slit 2 (gap = a)  ╱     │
+       │                    │   ↓                       │
+       │                    │                           │
+       │                    │←────── L (metres) ───────►│
+       │                    │← d (slit separation) →│
+        </pre>
+        <div class="diagram-caption">
+          Schematic of the double-slit setup. <strong>d</strong> = slit separation (centre-to-centre),
+          <strong>a</strong> = slit width, <strong>L</strong> = distance to screen.
+        </div>
+      </div>
+
+      <table class="params-table">
+        <thead>
+          <tr><th>Symbol</th><th>Quantity</th><th>Typical Value</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>λ</td><td>Wavelength</td><td>380–750 nm</td><td>Controls fringe spacing and color</td></tr>
+          <tr><td>d</td><td>Slit separation</td><td>0.1–5 mm</td><td>Larger d → closer fringes</td></tr>
+          <tr><td>a</td><td>Slit width</td><td>0.01–0.5 mm</td><td>Controls single-slit envelope width</td></tr>
+          <tr><td>L</td><td>Screen distance</td><td>0.1–2 m</td><td>Larger L → wider fringe spacing</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── Path Difference ───────────────────────────────────────────────────── -->
+    <section id="path-difference">
+      <h2>Path Difference</h2>
+      <p>
+        Consider a point P on the screen at height <em>y</em> from the centre. Light from Slit 1
+        travels a distance <em>r₁</em> to P, and light from Slit 2 travels <em>r₂</em>. The
+        <strong>path difference</strong> is:
+      </p>
+      <div class="formula-block">
+        <div class="formula">Δ = r₂ − r₁</div>
+      </div>
+      <p>
+        For the geometry where <em>L ≫ d</em> (screen is far away — the <em>Fraunhofer</em> or far-field
+        approximation), this simplifies to:
+      </p>
+      <div class="formula-block">
+        <div class="formula">Δ = d · sin θ</div>
+        <div class="formula-sub">where θ is the angle from the central axis to point P</div>
+      </div>
+      <p>
+        For small angles (θ ≪ 1 rad, i.e. y ≪ L), we can further approximate:
+      </p>
+      <div class="formula-block">
+        <div class="formula">sin θ ≈ tan θ = y / L</div>
+        <div class="formula-sub">⟹ &nbsp; Δ ≈ d · y / L</div>
+      </div>
+      <div class="callout callout-yellow">
+        <strong>In the simulator:</strong> the exact formula <code>sin θ = y / √(y² + L²)</code>
+        is used (no small-angle approximation), so the pattern is accurate even for large angles.
+      </div>
+    </section>
+
+    <!-- ── Interference Condition ────────────────────────────────────────────── -->
+    <section id="interference">
+      <h2>Interference Conditions</h2>
+      <p>
+        The two waves arrive at P with a phase difference proportional to the path difference. Whether
+        they add (constructive) or cancel (destructive) depends on how many whole wavelengths fit into Δ.
+      </p>
+
+      <div class="two-col">
+        <div class="col-card col-bright">
+          <h3>✦ Constructive (Bright Fringe)</h3>
+          <p>Waves arrive in phase — crests meet crests.</p>
+          <div class="formula-sm">Δ = mλ &nbsp; (m = 0, ±1, ±2, …)</div>
+          <div class="formula-sm">y<sub>m</sub> = mλL / d</div>
+          <p class="note">m is the <em>fringe order</em>. m=0 is the central maximum.</p>
+        </div>
+        <div class="col-card col-dark">
+          <h3>✦ Destructive (Dark Fringe)</h3>
+          <p>Waves arrive out of phase — crests meet troughs.</p>
+          <div class="formula-sm">Δ = (m + ½)λ &nbsp; (m = 0, ±1, …)</div>
+          <div class="formula-sm">y<sub>m</sub> = (m + ½)λL / d</div>
+          <p class="note">Halfway between bright fringes.</p>
+        </div>
+      </div>
+
+      <div class="wave-diagram">
+        <div class="wave-row">
+          <span class="wave-label">Wave 1</span>
+          <svg class="wave-svg" viewBox="0 0 200 30">
+            <path d="M0,15 Q12.5,0 25,15 Q37.5,30 50,15 Q62.5,0 75,15 Q87.5,30 100,15 Q112.5,0 125,15 Q137.5,30 150,15 Q162.5,0 175,15 Q187.5,30 200,15" fill="none" stroke="#58a6ff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="wave-row">
+          <span class="wave-label">Wave 2 (Δ=0)</span>
+          <svg class="wave-svg" viewBox="0 0 200 30">
+            <path d="M0,15 Q12.5,0 25,15 Q37.5,30 50,15 Q62.5,0 75,15 Q87.5,30 100,15 Q112.5,0 125,15 Q137.5,30 150,15 Q162.5,0 175,15 Q187.5,30 200,15" fill="none" stroke="#3fb950" stroke-width="2"/>
+          </svg>
+          <span class="wave-outcome bright-outcome">→ Bright (in phase)</span>
+        </div>
+        <div class="wave-row" style="margin-top:16px">
+          <span class="wave-label">Wave 1</span>
+          <svg class="wave-svg" viewBox="0 0 200 30">
+            <path d="M0,15 Q12.5,0 25,15 Q37.5,30 50,15 Q62.5,0 75,15 Q87.5,30 100,15 Q112.5,0 125,15 Q137.5,30 150,15 Q162.5,0 175,15 Q187.5,30 200,15" fill="none" stroke="#58a6ff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="wave-row">
+          <span class="wave-label">Wave 2 (Δ=λ/2)</span>
+          <svg class="wave-svg" viewBox="0 0 200 30">
+            <path d="M0,15 Q12.5,30 25,15 Q37.5,0 50,15 Q62.5,30 75,15 Q87.5,0 100,15 Q112.5,30 125,15 Q137.5,0 150,15 Q162.5,30 175,15 Q187.5,0 200,15" fill="none" stroke="#f78166" stroke-width="2"/>
+          </svg>
+          <span class="wave-outcome dark-outcome">→ Dark (out of phase)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Intensity Formula ─────────────────────────────────────────────────── -->
+    <section id="intensity">
+      <h2>Intensity Formula</h2>
+      <p>
+        The total amplitude at a point is the sum of the two wave amplitudes. Using trigonometric
+        addition, the <strong>intensity</strong> (proportional to amplitude squared) works out to:
+      </p>
+      <div class="formula-block formula-highlight">
+        <div class="formula">I(θ) = 4I₀ · cos²( πd sin θ / λ )</div>
+        <div class="formula-sub">where I₀ is the intensity from a single slit</div>
+      </div>
+      <p>
+        This is the pure double-slit result. Because cos²(x) oscillates between 0 and 1, the intensity
+        ranges from <strong>0</strong> (dark fringe, destructive) to <strong>4I₀</strong>
+        (bright fringe, constructive — four times a single slit, because amplitude doubles and
+        I ∝ A²).
+      </p>
+      <div class="step-derivation">
+        <h4>Step-by-step derivation</h4>
+        <ol>
+          <li>
+            Wave from slit 1 at point P: &nbsp; <code>E₁ = A sin(kr₁ − ωt)</code>
+          </li>
+          <li>
+            Wave from slit 2 at point P: &nbsp; <code>E₂ = A sin(kr₂ − ωt)</code>
+          </li>
+          <li>
+            Total field: <code>E = E₁ + E₂</code>. Using sum-to-product:
+            <code>E = 2A cos(kΔ/2) · sin(k(r₁+r₂)/2 − ωt)</code>
+          </li>
+          <li>
+            Intensity (time-averaged) ∝ amplitude²:
+            <code>I = 4A² cos²(kΔ/2) = 4I₀ cos²(πΔ/λ)</code>
+          </li>
+        </ol>
+      </div>
+      <div class="callout callout-blue">
+        <strong>In the simulator:</strong> the intensity function at <code>main.js:72</code>
+        computes <code>sinTheta = y / √(y² + L²)</code>, then
+        <code>delta = d · sinTheta</code>, then <code>I = A² · cos²(π·delta/λ) · sinc²(...)</code>.
+        The amplitude slider multiplies A directly.
+      </div>
+    </section>
+
+    <!-- ── Single-slit envelope ──────────────────────────────────────────────── -->
+    <section id="single-slit">
+      <h2>Single-Slit Envelope</h2>
+      <p>
+        Each slit has a finite width <em>a</em>. A single finite slit produces its own diffraction
+        pattern — a broad central peak with weaker side lobes. This <strong>single-slit envelope</strong>
+        multiplies the double-slit pattern and modulates which fringes are visible.
+      </p>
+      <div class="formula-block formula-highlight">
+        <div class="formula">I(θ) = I₀ · sinc²( πa sin θ / λ ) · cos²( πd sin θ / λ )</div>
+        <div class="formula-sub">sinc(x) = sin(x)/x &nbsp;|&nbsp; sinc(0) = 1</div>
+      </div>
+      <p>
+        The <strong>sinc²</strong> factor goes to zero when <code>a sin θ = mλ</code>, which creates
+        <em>missing orders</em> — fringe maxima that are suppressed because they fall exactly at a
+        single-slit minimum.
+      </p>
+      <div class="callout callout-yellow">
+        <strong>Try it:</strong> In the simulator, set slit width <strong>a</strong> very close to
+        the slit separation <strong>d</strong>. You'll see every other fringe disappear
+        (the m=±1 maxima of the double-slit pattern coincide with the first minimum of the
+        single-slit envelope).
+      </div>
+      <div class="effect-diagram">
+        <div class="effect-row">
+          <span class="eff-label">Double-slit only</span>
+          <div class="eff-bar-wrap">
+            <div class="bar bar-ds" id="bar-ds"></div>
+          </div>
+        </div>
+        <div class="effect-row">
+          <span class="eff-label">Single-slit envelope</span>
+          <div class="eff-bar-wrap">
+            <div class="bar bar-ss" id="bar-ss"></div>
+          </div>
+        </div>
+        <div class="effect-row">
+          <span class="eff-label">Combined result</span>
+          <div class="eff-bar-wrap">
+            <div class="bar bar-combined" id="bar-combined"></div>
+          </div>
+        </div>
+        <canvas id="envelope-canvas" height="100"></canvas>
+        <div class="diagram-caption">Schematic: the double-slit fringes modulated by the single-slit envelope.</div>
+      </div>
+    </section>
+
+    <!-- ── Fringe Spacing ────────────────────────────────────────────────────── -->
+    <section id="fringe-spacing">
+      <h2>Fringe Spacing</h2>
+      <p>
+        The distance between adjacent bright fringes (fringe spacing β) is one of the most practically
+        useful results of the experiment:
+      </p>
+      <div class="formula-block formula-highlight">
+        <div class="formula">β = λL / d</div>
+      </div>
+      <p>This tells us immediately how each parameter affects the pattern:</p>
+      <table class="effect-table">
+        <thead>
+          <tr><th>Parameter</th><th>Increase it</th><th>Fringe spacing β</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>λ (wavelength)</td>
+            <td>longer wavelength (redder light)</td>
+            <td class="eff-up">↑ increases (wider fringes)</td>
+          </tr>
+          <tr>
+            <td>L (screen distance)</td>
+            <td>move screen farther away</td>
+            <td class="eff-up">↑ increases (wider fringes)</td>
+          </tr>
+          <tr>
+            <td>d (slit separation)</td>
+            <td>move slits further apart</td>
+            <td class="eff-down">↓ decreases (closer fringes)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout callout-green">
+        <strong>Practical application:</strong> This formula is used to measure the wavelength of light.
+        Rearrange: <strong>λ = βd / L</strong>. Measure the fringe spacing β with a ruler, and you
+        can calculate λ to high accuracy.
+      </div>
+    </section>
+
+    <!-- ── Wavelength & Color ────────────────────────────────────────────────── -->
+    <section id="wavelength-color">
+      <h2>Wavelength &amp; Color</h2>
+      <p>
+        The wavelength of visible light determines its color. The simulator maps wavelength to an RGB
+        color using a standard spectral approximation (implemented in <code>main.js:37</code>):
+      </p>
+      <div class="spectrum-bar">
+        <div class="spec-region" style="background: linear-gradient(to right, #6000cc, #3300ff); flex:1">
+          <span>Violet<br>380–450</span>
+        </div>
+        <div class="spec-region" style="background: linear-gradient(to right, #3300ff, #0077ff); flex:0.7">
+          <span>Blue<br>450–495</span>
+        </div>
+        <div class="spec-region" style="background: linear-gradient(to right, #0077ff, #00ee77); flex:0.6">
+          <span>Cyan<br>495–520</span>
+        </div>
+        <div class="spec-region" style="background: linear-gradient(to right, #00ee77, #aaff00); flex:0.8">
+          <span>Green<br>520–560</span>
+        </div>
+        <div class="spec-region" style="background: linear-gradient(to right, #aaff00, #ffee00); flex:0.6">
+          <span>Yellow<br>560–590</span>
+        </div>
+        <div class="spec-region" style="background: linear-gradient(to right, #ffee00, #ff4400); flex:0.7">
+          <span>Orange<br>590–625</span>
+        </div>
+        <div class="spec-region" style="background: linear-gradient(to right, #ff4400, #aa0000); flex:1.5">
+          <span>Red<br>625–750</span>
+        </div>
+      </div>
+      <p>
+        The simulator also applies an <strong>intensity rolloff</strong> at the UV (380–420 nm) and
+        far-red (700–750 nm) ends of the spectrum, because the human eye's sensitivity drops sharply
+        at those extremes.
+      </p>
+      <div class="callout callout-yellow">
+        <strong>White light:</strong> Real sunlight contains all wavelengths. Each wavelength
+        produces its own fringe pattern at a different spacing — the patterns overlap, washing out
+        higher-order fringes and giving each fringe a rainbow tinge. The central fringe (m=0, Δ=0 for
+        all λ) stays white.
+      </div>
+    </section>
+
+    <!-- ── How the Sim Works ─────────────────────────────────────────────────── -->
+    <section id="how-sim-works">
+      <h2>How the Simulator Works</h2>
+      <p>
+        The simulator uses the <strong>HTML5 Canvas API</strong> with
+        <code>requestAnimationFrame</code> for real-time rendering. Everything runs in the browser —
+        no server, no dependencies.
+      </p>
+
+      <h3>Wave Propagation Canvas</h3>
+      <p>
+        The wave field is computed <strong>per-pixel</strong> every frame using direct superposition
+        of two sinusoidal point sources (Huygens' principle):
+      </p>
+      <div class="code-block">
+<pre><span class="kw">for</span> each pixel (px, py):
+  r1 = distance from pixel to Slit 1    <span class="cm">// metres</span>
+  r2 = distance from pixel to Slit 2
+
+  w1 = A · sin(k·r1 − phase) / √r1     <span class="cm">// 2D amplitude decay: 1/√r</span>
+  w2 = A · sin(k·r2 − phase) / √r2
+
+  total = (w1 + w2) / 2                 <span class="cm">// superposition</span>
+  brightness = (total + 1) / 2          <span class="cm">// map [-1,1] → [0,1]</span>
+  pixel color = wavelength_color × brightness</pre>
+      </div>
+      <p>
+        The <strong>phase</strong> variable advances each frame:
+        <code>phase += dt × animSpeed × 4.0</code>, giving the illusion of waves travelling
+        outward from the slits. The factor 4.0 is a visual speed scaling (true optical frequencies
+        of ~5×10¹⁴ Hz are imperceptible).
+      </p>
+
+      <h3>Screen Strip</h3>
+      <p>
+        The vertical strip on the right of the wave canvas is rendered independently using the
+        <strong>exact intensity formula</strong> (not the wave simulation), giving a clean, accurate
+        fringe pattern regardless of the wave animation zoom level.
+      </p>
+
+      <h3>Intensity Graph</h3>
+      <p>
+        The graph below the wave canvas plots <code>I(y)</code> by sampling the intensity function
+        at each horizontal pixel, converting pixel position to physical screen coordinate <em>y</em>
+        using the fringe spacing β to set the axis range:
+      </p>
+      <div class="code-block">
+<pre>yRange = max(β × 5, 0.1 mm)             <span class="cm">// show ±5 fringe spacings</span>
+<span class="kw">for</span> i in 0..plotWidth:
+  y_phys = -yRange + i × (2·yRange / plotWidth)
+  I      = intensity(y_phys, λ, d, a, L, A)
+  plot pixel at height I × plotHeight</pre>
+      </div>
+
+      <h3>Coordinate System</h3>
+      <div class="code-block">
+<pre>Canvas pixels → Physical metres:
+  scaleX = L / (canvasWidth − barrierX)     <span class="cm">// metres per pixel (horizontal)</span>
+  scaleY = L × 0.8 / canvasHeight           <span class="cm">// metres per pixel (vertical)</span>
+
+Slit positions (pixels):
+  slit1y = centreY − (d/2) / scaleY
+  slit2y = centreY + (d/2) / scaleY</pre>
+      </div>
+
+      <h3>State Object</h3>
+      <p>All simulation parameters live in a single <code>state</code> object:</p>
+      <div class="code-block">
+<pre><span class="kw">const</span> state = {
+  lambda:     <span class="num">550e-9</span>,   <span class="cm">// wavelength (metres)</span>
+  d:          <span class="num">1e-3</span>,     <span class="cm">// slit separation (metres)</span>
+  a:          <span class="num">0.1e-3</span>,   <span class="cm">// slit width (metres)</span>
+  L:          <span class="num">1.0</span>,      <span class="cm">// screen distance (metres)</span>
+  amplitude:  <span class="num">1.0</span>,      <span class="cm">// wave amplitude multiplier</span>
+  animSpeed:  <span class="num">1.0</span>,      <span class="cm">// animation speed multiplier</span>
+  phase:      <span class="num">0</span>,        <span class="cm">// running phase (radians)</span>
+};</pre>
+      </div>
+      <p>
+        Sliders update <code>state</code> in real time via <code>input</code> event listeners wired
+        in <code>wireControls()</code>. Every frame the render functions read directly from
+        <code>state</code>, so the simulation updates instantly.
+      </p>
+    </section>
+
+    <!-- ── Controls Guide ────────────────────────────────────────────────────── -->
+    <section id="controls-guide">
+      <h2>Controls Guide</h2>
+      <table class="controls-table">
+        <thead>
+          <tr><th>Control</th><th>Range</th><th>Default</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Wavelength (λ)</strong></td>
+            <td>380–750 nm</td>
+            <td>550 nm</td>
+            <td>Changes the color of light and the fringe spacing. Shorter λ → violet, tighter fringes. Longer λ → red, wider fringes.</td>
+          </tr>
+          <tr>
+            <td><strong>Slit Separation (d)</strong></td>
+            <td>0.1–5 mm</td>
+            <td>1.0 mm</td>
+            <td>Distance between the two slit centres. Increasing d compresses the fringe pattern (β = λL/d).</td>
+          </tr>
+          <tr>
+            <td><strong>Slit Width (a)</strong></td>
+            <td>0.01–0.5 mm</td>
+            <td>0.10 mm</td>
+            <td>Width of each individual slit. Increasing a narrows the single-slit envelope, suppressing outer fringes.</td>
+          </tr>
+          <tr>
+            <td><strong>Screen Distance (L)</strong></td>
+            <td>0.1–2 m</td>
+            <td>1.0 m</td>
+            <td>Distance from the barrier to the detection screen. Increasing L spreads the fringe pattern out.</td>
+          </tr>
+          <tr>
+            <td><strong>Intensity (A)</strong></td>
+            <td>0.1–2.0</td>
+            <td>1.0</td>
+            <td>Amplitude of the wave source. Scales overall brightness; I ∝ A². Does not change fringe positions.</td>
+          </tr>
+          <tr>
+            <td><strong>Animation Speed</strong></td>
+            <td>0.1×–3×</td>
+            <td>1.0×</td>
+            <td>Speed of the animated wavefronts. Purely visual — does not affect the physics or fringe pattern.</td>
+          </tr>
+          <tr>
+            <td><strong>Animate waves</strong></td>
+            <td>on/off</td>
+            <td>on</td>
+            <td>Pauses the wave animation. The interference field is still shown; it just becomes a static snapshot.</td>
+          </tr>
+          <tr>
+            <td><strong>Fringe labels</strong></td>
+            <td>on/off</td>
+            <td>on</td>
+            <td>Toggles the m=0, ±1, ±2 … order labels on the screen strip and the intensity graph.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── Try These ─────────────────────────────────────────────────────────── -->
+    <section id="experiments">
+      <h2>Try These Experiments</h2>
+      <div class="experiment-cards">
+
+        <div class="exp-card">
+          <div class="exp-num">01</div>
+          <h3>Measure fringe spacing</h3>
+          <p>
+            Set λ=550 nm, d=1 mm, L=1 m. The formula predicts β = 0.55 mm.
+            Observe the intensity graph and confirm the peak-to-peak spacing matches.
+            Now double L to 2 m — does β double as expected?
+          </p>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-num">02</div>
+          <h3>Single-slit vs. double-slit</h3>
+          <p>
+            Slowly increase slit width <em>a</em> from 0.01 mm toward d (the slit separation).
+            Watch the single-slit envelope narrow and swallow outer fringes.
+            At a = d/2, the m=±2 fringes disappear (missing order).
+          </p>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-num">03</div>
+          <h3>Violet vs. Red light</h3>
+          <p>
+            Compare λ=400 nm (violet) with λ=700 nm (red), keeping all else equal.
+            Red light produces fringes ~1.75× wider than violet. This is why a white-light
+            double-slit pattern shows rainbow-colored fringes.
+          </p>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-num">04</div>
+          <h3>The central maximum</h3>
+          <p>
+            The m=0 fringe is always at the centre regardless of λ, d, or L.
+            This is because at y=0, both slits are equidistant (Δ=0), so all wavelengths
+            constructively interfere — it would appear white with real white light.
+          </p>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-num">05</div>
+          <h3>Wave field structure</h3>
+          <p>
+            Pause the animation and look at the wave field. Trace the bright stripes radiating
+            from the slits — these are lines of constructive interference. Count them: they
+            correspond to fringe orders m=0, ±1, ±2 … on the screen.
+          </p>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-num">06</div>
+          <h3>Fringe count vs. slit separation</h3>
+          <p>
+            With λ=550 nm and L=1 m, increase d from 0.5 mm to 5 mm. Count how many fringes
+            fit in the central single-slit maximum. The number should scale with d/a (the ratio
+            of slit separation to slit width).
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <p>Young's Double Slit Visualizer &mdash; Vanilla HTML/CSS/JS &mdash; All physics computed in-browser</p>
+      <a href="index.html">Back to Simulator &rarr;</a>
+    </footer>
+
+  </main>
+
+  <script>
+    // ── Smooth scroll for nav links ──────────────────────────────────────────
+    document.querySelectorAll('.sidebar a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // ── Active section highlight on scroll ──────────────────────────────────
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(a => a.classList.remove('active'));
+          const active = document.querySelector(`.sidebar a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+
+    // ── Draw envelope canvas ─────────────────────────────────────────────────
+    window.addEventListener('load', () => {
+      const canvas = document.getElementById('envelope-canvas');
+      if (!canvas) return;
+      const W = canvas.parentElement.offsetWidth || 600;
+      canvas.width = W;
+      const H = canvas.height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#050810';
+      ctx.fillRect(0, 0, W, H);
+
+      const sinc = x => Math.abs(x) < 1e-10 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+      const d = 1e-3, a = 0.15e-3, lambda = 550e-9;
+      const nPts = W;
+
+      // DS only
+      ctx.beginPath();
+      ctx.strokeStyle = '#58a6ff44';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nPts; i++) {
+        const sinT = (i / nPts - 0.5) * 2 * 0.015;
+        const phase = Math.PI * d * sinT / lambda;
+        const I = Math.pow(Math.cos(phase), 2);
+        const py = H - I * (H - 4) - 2;
+        i === 0 ? ctx.moveTo(i, py) : ctx.lineTo(i, py);
+      }
+      ctx.stroke();
+
+      // Envelope
+      ctx.beginPath();
+      ctx.strokeStyle = '#f0c04066';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < nPts; i++) {
+        const sinT = (i / nPts - 0.5) * 2 * 0.015;
+        const env = Math.pow(sinc(a * sinT / lambda), 2);
+        const py = H - env * (H - 4) - 2;
+        i === 0 ? ctx.moveTo(i, py) : ctx.lineTo(i, py);
+      }
+      ctx.stroke();
+
+      // Combined
+      ctx.beginPath();
+      ctx.strokeStyle = '#3fb950';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < nPts; i++) {
+        const sinT = (i / nPts - 0.5) * 2 * 0.015;
+        const phase = Math.PI * d * sinT / lambda;
+        const env   = Math.pow(sinc(a * sinT / lambda), 2);
+        const I     = Math.pow(Math.cos(phase), 2) * env;
+        const py    = H - I * (H - 4) - 2;
+        i === 0 ? ctx.moveTo(i, py) : ctx.lineTo(i, py);
+      }
+      ctx.stroke();
+
+      // Legend
+      ctx.font = '10px monospace';
+      ctx.fillStyle = '#58a6ff88'; ctx.fillText('double-slit fringes', 8, 14);
+      ctx.fillStyle = '#f0c04099'; ctx.fillText('single-slit envelope', 8, 26);
+      ctx.fillStyle = '#3fb950';   ctx.fillText('combined result', 8, 38);
+    });
+  </script>
+</body>
+</html>
