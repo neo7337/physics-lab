@@ -26,6 +26,7 @@ const state = {
   animSpeed:  1.0,      // animation speed multiplier
   animate:    true,     // wave animation on/off
   showLabels: true,     // fringe labels on/off
+  observer:   false,    // observer effect on/off
   phase:      0,        // running phase for animation (radians)
 };
 
@@ -93,6 +94,25 @@ function intensity(y, lambda, d, a, L, amplitude) {
   const phase    = Math.PI * delta / lambda;         // interference phase
   const envelope = sinc(a * sinTheta / lambda);      // single-slit envelope
   const I = amplitude * amplitude * Math.pow(Math.cos(phase), 2) * Math.pow(envelope, 2);
+  return Math.min(1, Math.max(0, I));
+}
+
+/**
+ * Observer-mode intensity: which-path info destroys coherence.
+ * Each slit contributes an independent single-slit diffraction pattern
+ * (incoherent sum — no cos² interference term).
+ * @returns intensity in [0, 1]
+ */
+function intensityObserver(y, lambda, d, a, L, amplitude) {
+  const halfD = d / 2;
+  // Angle from each slit centre to screen point
+  const sinTheta1 = (y - halfD) / Math.sqrt((y - halfD) ** 2 + L * L);  // from slit 1 (top, at +d/2)
+  const sinTheta2 = (y + halfD) / Math.sqrt((y + halfD) ** 2 + L * L);  // from slit 2 (bottom, at -d/2)
+  // Single-slit diffraction envelope from each slit independently
+  const env1 = sinc(a * sinTheta1 / lambda);
+  const env2 = sinc(a * sinTheta2 / lambda);
+  // Incoherent sum: intensities add, not amplitudes
+  const I = 0.5 * amplitude * amplitude * (env1 * env1 + env2 * env2);
   return Math.min(1, Math.max(0, I));
 }
 
@@ -196,17 +216,33 @@ function drawWaveField() {
       const ring1 = Math.pow(b1, 1.8);
       const ring2 = Math.pow(b2, 1.8);
 
-      // Add a soft glow proportional to the combined constructive amplitude
-      // (makes the interference corridors glow even between ring lines)
-      const combined   = w1 + w2;
-      const normC      = combined / (decay1 + decay2 + 1e-9);  // −1 → +1
-      const glowBright = Math.max(0, normC);                   // only constructive half
-      const glow       = Math.pow(glowBright, 2.5) * 0.35;    // subtle
+      let R, G, B;
 
-      // Final per-channel: slit1 color × ring1 + slit2 color × ring2 + white glow
-      let R = S1R * ring1 + S2R * ring2 + 255 * glow;
-      let G = S1G * ring1 + S2G * ring2 + 255 * glow;
-      let B = S1B * ring1 + S2B * ring2 + 255 * glow;
+      if (state.observer) {
+        // Observer mode: slits are incoherent — each slit glows in its own color
+        // independently, with no interference corridors between them.
+        // Dim the opposite slit's contribution so the separation is clear.
+        R = S1R * ring1 + S2R * ring2;
+        G = S1G * ring1 + S2G * ring2;
+        B = S1B * ring1 + S2B * ring2;
+        // Desaturate slightly to visually suggest "measured" / collapsed state
+        const lum = 0.299 * R + 0.587 * G + 0.114 * B;
+        R = lum * 0.35 + R * 0.65;
+        G = lum * 0.35 + G * 0.65;
+        B = lum * 0.35 + B * 0.65;
+      } else {
+        // Add a soft glow proportional to the combined constructive amplitude
+        // (makes the interference corridors glow even between ring lines)
+        const combined   = w1 + w2;
+        const normC      = combined / (decay1 + decay2 + 1e-9);  // −1 → +1
+        const glowBright = Math.max(0, normC);                   // only constructive half
+        const glow       = Math.pow(glowBright, 2.5) * 0.35;    // subtle
+
+        // Final per-channel: slit1 color × ring1 + slit2 color × ring2 + white glow
+        R = S1R * ring1 + S2R * ring2 + 255 * glow;
+        G = S1G * ring1 + S2G * ring2 + 255 * glow;
+        B = S1B * ring1 + S2B * ring2 + 255 * glow;
+      }
 
       // Clamp to 0–255
       data[idx    ] = Math.min(255, Math.round(R));
@@ -301,6 +337,51 @@ function drawWaveField() {
   wCtx.fillText('SLIT 2', bx - 4, slit2y + 4);
   wCtx.restore();
 
+  // ── Observer detector icons ───────────────────────────────────────────────
+  if (state.observer) {
+    [slit1y, slit2y].forEach(sy => {
+      const ex = cx + slitHalfPxClamped + 8;  // just to the right of the slit opening
+      const ey = sy;
+      const er = 7;  // eye radius
+
+      // Pulsing red "eye" — outer glow
+      const pulseAlpha = 0.4 + 0.3 * Math.abs(Math.sin(state.phase * 0.8));
+      const eyeGrad = wCtx.createRadialGradient(ex, ey, 0, ex, ey, er * 3);
+      eyeGrad.addColorStop(0,   `rgba(255,60,60,${pulseAlpha})`);
+      eyeGrad.addColorStop(0.5, `rgba(255,30,30,${pulseAlpha * 0.4})`);
+      eyeGrad.addColorStop(1,   'rgba(255,0,0,0)');
+      wCtx.save();
+      wCtx.beginPath();
+      wCtx.arc(ex, ey, er * 3, 0, 2 * Math.PI);
+      wCtx.fillStyle = eyeGrad;
+      wCtx.fill();
+      wCtx.restore();
+
+      // Eye body (small red circle)
+      wCtx.beginPath();
+      wCtx.arc(ex, ey, er, 0, 2 * Math.PI);
+      wCtx.fillStyle = '#cc0000';
+      wCtx.fill();
+      wCtx.strokeStyle = '#ff4444';
+      wCtx.lineWidth = 1.5;
+      wCtx.stroke();
+
+      // Pupil (dark dot)
+      wCtx.beginPath();
+      wCtx.arc(ex, ey, 2.5, 0, 2 * Math.PI);
+      wCtx.fillStyle = '#000';
+      wCtx.fill();
+    });
+
+    // "OBSERVED" label below the barrier
+    wCtx.save();
+    wCtx.font = 'bold 8px monospace';
+    wCtx.fillStyle = '#ff4444cc';
+    wCtx.textAlign = 'center';
+    wCtx.fillText('OBSERVED', BARRIER_X, H - 4);
+    wCtx.restore();
+  }
+
   // ── Barrier label ─────────────────────────────────────────────────────────
   wCtx.save();
   wCtx.font = 'bold 8px monospace';
@@ -356,7 +437,7 @@ function drawWaveField() {
   const sd           = screenImg.data;
   for (let sy = 0; sy < H; sy++) {
     const y_phys = (sy - cy) * scaleY;
-    const I      = intensity(y_phys, state.lambda, state.d, state.a, state.L, state.amplitude);
+    const I      = (state.observer ? intensityObserver : intensity)(y_phys, state.lambda, state.d, state.a, state.L, state.amplitude);
     for (let sx = 0; sx < screenW; sx++) {
       const si = (sy * screenW + sx) * 4;
       sd[si    ] = Math.round(wr * I);
@@ -418,7 +499,7 @@ function drawWaveField() {
   wCtx.restore();
 
   // ── Fringe order labels ───────────────────────────────────────────────────
-  if (state.showLabels) {
+  if (state.showLabels && !state.observer) {
     wCtx.save();
     wCtx.font = '10px monospace';
     wCtx.textAlign = 'left';
@@ -521,9 +602,10 @@ function drawIntensityGraph() {
   // Draw filled area
   gCtx.beginPath();
   let first = true;
+  const intensityFn = state.observer ? intensityObserver : intensity;
   for (let i = 0; i <= nSamples; i++) {
     const y_phys = -yRange + i * yStep;
-    const I      = intensity(y_phys, state.lambda, state.d, state.a, state.L, state.amplitude);
+    const I      = intensityFn(y_phys, state.lambda, state.d, state.a, state.L, state.amplitude);
     const px     = PAD_L + i;
     const py     = PAD_T + plotH - I * plotH;
     if (first) { gCtx.moveTo(px, PAD_T + plotH); gCtx.lineTo(px, py); first = false; }
@@ -539,7 +621,7 @@ function drawIntensityGraph() {
   first = true;
   for (let i = 0; i <= nSamples; i++) {
     const y_phys = -yRange + i * yStep;
-    const I      = intensity(y_phys, state.lambda, state.d, state.a, state.L, state.amplitude);
+    const I      = intensityFn(y_phys, state.lambda, state.d, state.a, state.L, state.amplitude);
     const px     = PAD_L + i;
     const py     = PAD_T + plotH - I * plotH;
     if (first) { gCtx.moveTo(px, py); first = false; }
@@ -550,7 +632,7 @@ function drawIntensityGraph() {
   gCtx.stroke();
 
   // ── Fringe markers ──
-  if (state.showLabels) {
+  if (state.showLabels && !state.observer) {
     gCtx.font = '9px monospace';
     for (let m = -4; m <= 4; m++) {
       const y_m = m * beta;
@@ -586,14 +668,23 @@ function updateFormulaPanel() {
   document.getElementById('p-a').textContent      = `${(a * 1000).toFixed(3)} mm`;
   document.getElementById('p-L').textContent      = `${L.toFixed(1)} m`;
 
-  // Fringe table
+  // Observer effect block visibility
+  document.getElementById('observer-block').style.display = state.observer ? 'block' : 'none';
+
+  // Fringe table — hide in observer mode (no fringes)
   const table = document.getElementById('fringe-table');
   table.innerHTML = '';
-  for (let m = -3; m <= 3; m++) {
-    const y_m = m * lambda * L / d;
+  if (!state.observer) {
+    for (let m = -3; m <= 3; m++) {
+      const y_m = m * lambda * L / d;
+      const tr = document.createElement('tr');
+      tr.className = 'maxima';
+      tr.innerHTML = `<td>m=${m > 0 ? '+' : ''}${m}</td><td>${(y_m * 1000).toFixed(3)} mm</td>`;
+      table.appendChild(tr);
+    }
+  } else {
     const tr = document.createElement('tr');
-    tr.className = 'maxima';
-    tr.innerHTML = `<td>m=${m > 0 ? '+' : ''}${m}</td><td>${(y_m * 1000).toFixed(3)} mm</td>`;
+    tr.innerHTML = `<td colspan="2" style="color:#f78166;font-size:0.75rem;text-align:center">No fringes — which-path known</td>`;
     table.appendChild(tr);
   }
 }
@@ -622,6 +713,14 @@ function wireControls() {
   });
   document.getElementById('toggle-labels').addEventListener('change', e => {
     state.showLabels = e.target.checked;
+  });
+  document.getElementById('toggle-observer').addEventListener('change', e => {
+    state.observer = e.target.checked;
+    const badge = document.querySelector('.observer-badge');
+    if (badge) badge.textContent = state.observer ? 'ON' : 'OFF';
+    const hint = document.getElementById('observer-hint');
+    if (hint) hint.classList.toggle('observer-hint--active', state.observer);
+    updateFormulaPanel();
   });
 }
 

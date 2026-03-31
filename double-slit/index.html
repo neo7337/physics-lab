@@ -79,6 +79,14 @@
           <span class="toggle-switch"></span>
           Fringe labels
         </label>
+        <label class="toggle-label toggle-label--observer">
+          <input type="checkbox" id="toggle-observer" />
+          <span class="toggle-switch toggle-switch--observer"></span>
+          <span class="observer-label-text">Observer <span class="observer-badge">OFF</span></span>
+        </label>
+        <div class="observer-hint" id="observer-hint">
+          Which-path info destroys interference — two bands replace the fringe pattern.
+        </div>
       </div>
     </aside>
 
@@ -105,6 +113,13 @@
     <!-- Formula Panel -->
     <aside class="formula-panel">
       <h2>Physics</h2>
+
+      <div class="formula-block" id="observer-block" style="display:none">
+        <div class="formula-title" style="color:#f78166">Observer Effect</div>
+        <div class="formula" style="font-size:0.85rem">D² + V² ≤ 1</div>
+        <div class="formula-note">D = path distinguishability<br>V = fringe visibility</div>
+        <div class="formula-live" style="color:#f78166">Interference: DESTROYED</div>
+      </div>
 
       <div class="formula-block">
         <div class="formula-title">Path Difference</div>
