@@ -115,8 +115,14 @@ function drawWaveField() {
   const cx = BARRIER_X;
   const cy = H / 2;
 
+  // Screen position moves with L: canvas right edge = L_MAX, barrier = left anchor.
+  const L_MAX      = 2.0;   // must match slider max
+  const SCREEN_W   = 18;
+  const availPx    = W - cx - SCREEN_W - 2;   // pixels available between barrier and right edge
+  const screenStartX = Math.round(cx + availPx * (state.L / L_MAX));
+
   const physH  = state.L * 0.8;
-  const scaleX = state.L / (W - cx);
+  const scaleX = state.L / (screenStartX - cx);
   const scaleY = physH / H;
 
   const slitOffPx  = (state.d / 2) / scaleY;
@@ -155,6 +161,15 @@ function drawWaveField() {
         data[idx    ] = b;
         data[idx + 1] = b;
         data[idx + 2] = b + 8;
+        data[idx + 3] = 255;
+        continue;
+      }
+
+      // Right of screen: dark wall region
+      if (px >= screenStartX) {
+        data[idx    ] = 5;
+        data[idx + 1] = 8;
+        data[idx + 2] = 12;
         data[idx + 3] = 255;
         continue;
       }
@@ -336,8 +351,7 @@ function drawWaveField() {
 
   // ── Screen strip ──────────────────────────────────────────────────────────
   const [wr, wg, wb] = wavelengthToRGB(lambdaNm);
-  const screenW      = 18;
-  const screenStartX = W - screenW - 1;
+  const screenW      = SCREEN_W;
   const screenImg    = wCtx.createImageData(screenW, H);
   const sd           = screenImg.data;
   for (let sy = 0; sy < H; sy++) {
@@ -364,14 +378,43 @@ function drawWaveField() {
   wCtx.lineTo(screenStartX, H);
   wCtx.stroke();
 
-  // Detector label
+  // Detector label (centered on screen strip, not pinned to canvas right edge)
   wCtx.save();
   wCtx.font = 'bold 8px monospace';
   wCtx.fillStyle = '#58a6ffcc';
   wCtx.textAlign = 'center';
-  wCtx.translate(W - 5, H / 2);
+  wCtx.translate(screenStartX + screenW / 2, H / 2);
   wCtx.rotate(-Math.PI / 2);
   wCtx.fillText('DETECTOR SCREEN', 0, 0);
+  wCtx.restore();
+
+  // ── Distance annotation: dashed line from barrier to screen with L label ──
+  const annotY = H - 14;
+  wCtx.save();
+  wCtx.strokeStyle = 'rgba(255,255,255,0.22)';
+  wCtx.lineWidth   = 1;
+  wCtx.setLineDash([4, 5]);
+  wCtx.beginPath();
+  wCtx.moveTo(cx, annotY);
+  wCtx.lineTo(screenStartX, annotY);
+  wCtx.stroke();
+  wCtx.setLineDash([]);
+  // Arrow caps
+  wCtx.strokeStyle = 'rgba(255,255,255,0.35)';
+  wCtx.lineWidth = 1;
+  [[cx, 1], [screenStartX, -1]].forEach(([x, dir]) => {
+    wCtx.beginPath();
+    wCtx.moveTo(x, annotY);
+    wCtx.lineTo(x + dir * 5, annotY - 3);
+    wCtx.moveTo(x, annotY);
+    wCtx.lineTo(x + dir * 5, annotY + 3);
+    wCtx.stroke();
+  });
+  // L label
+  wCtx.font = 'bold 9px monospace';
+  wCtx.fillStyle = 'rgba(255,255,255,0.55)';
+  wCtx.textAlign = 'center';
+  wCtx.fillText(`L = ${state.L.toFixed(1)} m`, cx + (screenStartX - cx) / 2, annotY - 4);
   wCtx.restore();
 
   // ── Fringe order labels ───────────────────────────────────────────────────
@@ -384,8 +427,11 @@ function drawWaveField() {
       const y_m  = m * state.lambda * state.L / state.d;
       const py_m = cy + y_m / scaleY;
       if (py_m >= 4 && py_m <= H - 4) {
-        wCtx.fillStyle = m === 0 ? '#f0c040cc' : '#f0c04099';
-        wCtx.fillText(`m=${m > 0 ? '+' : ''}${m}`, screenStartX + screenW + 2, py_m + 3);
+        const labelX = screenStartX + screenW + 2;
+        if (labelX + 30 <= W) {
+          wCtx.fillStyle = m === 0 ? '#f0c040cc' : '#f0c04099';
+          wCtx.fillText(`m=${m > 0 ? '+' : ''}${m}`, labelX, py_m + 3);
+        }
       }
     }
     wCtx.restore();
