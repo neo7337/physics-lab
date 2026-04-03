@@ -1,0 +1,12 @@
+[
+  {
+    "name": "double-slit",
+    "label": "Young's Double-Slit Experiment",
+    "description": "Visualize wave interference from two Huygens point sources in real time, with exact intensity calculations including the single-slit envelope.",
+    "icon": "〰️",
+    "version": "1.0.0",
+    "category": "Wave Optics",
+    "path": "double-slit",
+    "home": "index.html"
+  }
+]
