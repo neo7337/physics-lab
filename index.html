@@ -108,26 +108,23 @@
   </header>
 
   <main class="grid" id="lab-grid">
-    <!-- populated by labs.json -->
+    <!-- populated by labs.js -->
   </main>
 
+  <script src="labs.js"></script>
   <script>
-    fetch('labs.json')
-      .then(r => r.json())
-      .then(labs => {
-        const grid = document.getElementById('lab-grid');
-        for (const lab of labs) {
-          const a = document.createElement('a');
-          a.className = 'card';
-          a.href = `${lab.path}/${lab.home}`;
-          a.innerHTML = `
-            <div class="card-icon">${lab.icon}</div>
-            <h2>${lab.label}</h2>
-            <p>${lab.description}</p>
-            <span class="tag">${lab.category}</span>`;
-          grid.appendChild(a);
-        }
-      });
+    const grid = document.getElementById('lab-grid');
+    for (const lab of LABS) {
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = `${lab.path}/${lab.home}`;
+      a.innerHTML = `
+        <div class="card-icon">${lab.icon}</div>
+        <h2>${lab.label}</h2>
+        <p>${lab.description}</p>
+        <span class="tag">${lab.category}</span>`;
+      grid.appendChild(a);
+    }
   </script>
 
   <footer>

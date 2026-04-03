@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Young's Double Slit Experiment</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="../labs.js"></script>
   <script>
-    fetch('../labs.json')
-      .then(r => r.json())
-      .then(labs => {
-        const lab = labs.find(l => l.name === 'double-slit');
-        if (lab) document.getElementById('version-badge').textContent = 'v' + lab.version;
-      });
+    document.addEventListener('DOMContentLoaded', () => {
+      const _lab = LABS.find(l => l.name === 'double-slit');
+      if (_lab) document.getElementById('version-badge').textContent = 'v' + _lab.version;
+    });
   </script>
 </head>
 <body>
