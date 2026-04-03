@@ -43,6 +43,16 @@ header .subtitle {
   font-size: 0.8rem;
   color: var(--text-dim);
 }
+.version-badge {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
 .docs-link {
   margin-left: auto;
   font-size: 0.8rem;
