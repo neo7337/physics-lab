@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single-Slit Diffraction — Docs</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="back-link">&larr; Physics Lab</a>
+      <strong>Single-Slit Diffraction</strong>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#overview" class="nav-link active">Overview</a></li>
+      <li><a href="#history" class="nav-link">History</a></li>
+      <li><a href="#setup" class="nav-link">Setup</a></li>
+      <li><a href="#derivation" class="nav-link">Derivation</a></li>
+      <li><a href="#intensity" class="nav-link">Intensity Formula</a></li>
+      <li><a href="#minima" class="nav-link">Minima &amp; Maxima</a></li>
+      <li><a href="#parameters" class="nav-link">Parameter Effects</a></li>
+      <li><a href="#controls" class="nav-link">Controls Guide</a></li>
+      <li><a href="#experiments" class="nav-link">Guided Experiments</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html">Open Simulator &rarr;</a>
+    </div>
+  </nav>
+
+  <main class="doc-main">
+    <article>
+
+      <section id="overview">
+        <h1>Single-Slit Diffraction</h1>
+        <p class="lead">When coherent light passes through a single narrow slit, it spreads and produces a characteristic diffraction pattern: a bright central maximum flanked by progressively weaker secondary maxima, separated by sharp dark minima.</p>
+        <p>This is Fraunhofer (far-field) diffraction — the regime where the observation screen is far enough from the slit that the wavefronts arriving at any point can be treated as plane waves.</p>
+      </section>
+
+      <section id="history">
+        <h2>Historical Background</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="year">1665</span>
+            <div>Francesco Grimaldi first documented diffraction of light around obstacles, naming the phenomenon.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1678</span>
+            <div>Christiaan Huygens proposed that every point on a wavefront acts as a secondary source — the foundation of diffraction theory.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1801</span>
+            <div>Thomas Young's double-slit experiment demonstrated the wave nature of light.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1816</span>
+            <div>Augustin-Jean Fresnel combined Huygens' principle with wave interference, deriving the sinc² intensity formula rigorously.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1882</span>
+            <div>Joseph von Fraunhofer developed the far-field approximation, enabling the clean closed-form formula used today.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="setup">
+        <h2>Experimental Setup</h2>
+        <pre class="ascii-art">
+  Coherent         Barrier with        Detector
+  Light Source     single slit         Screen
+       │                │                 │
+  ─────┤    ────────────┤────             │
+       │                │    ↘ diffracted │ ← bright central max
+  ─────┤    ────────────┤────  ─────────►│
+  (plane │                │    ↗            │ ← dark minima
+  waves) │            [slit a]             │ ← weak secondary max
+       │                │                 │
+                    ←── L ────────────────►
+        </pre>
+        <p>Key parameters:</p>
+        <ul>
+          <li><strong>a</strong> — slit width (determines spread of diffraction)</li>
+          <li><strong>λ</strong> — wavelength of light</li>
+          <li><strong>L</strong> — distance from slit to screen (Fraunhofer regime: L ≫ a²/λ)</li>
+        </ul>
+      </section>
+
+      <section id="derivation">
+        <h2>Derivation</h2>
+        <p>Divide the slit of width <em>a</em> into infinitesimal Huygens sources. Each element <em>dy</em> at position <em>y₀</em> within the slit contributes a wave to point P on the screen.</p>
+        <p>For a screen point at angle θ, the path difference between a source at the top of the slit vs. the bottom is:</p>
+        <div class="formula-display">Δ<sub>total</sub> = a sin θ</div>
+        <p>Integrating all contributions from −a/2 to +a/2 (treating each as a phasor rotating at rate k sin θ):</p>
+        <div class="formula-display">E(θ) = E₀ · ∫<sub>−a/2</sub><sup>+a/2</sup> e<sup>ikx sinθ</sup> dx = E₀ · a · sinc(πa sinθ / λ)</div>
+        <p>The intensity is the square of the field amplitude:</p>
+        <div class="formula-display">I(θ) = I₀ · sinc²(πa sinθ / λ)</div>
+      </section>
+
+      <section id="intensity">
+        <h2>Intensity Formula</h2>
+        <div class="formula-card">
+          <div class="formula-main">I(y) = A² · sinc²(β)</div>
+          <div class="formula-sub">where β = πa sinθ / λ,  sinθ = y / √(y² + L²)</div>
+        </div>
+        <p>This simulation uses the <strong>exact geometry</strong> — no small-angle approximation. The sinc function is defined as:</p>
+        <div class="formula-display">sinc(x) = sin(πx) / (πx),  sinc(0) = 1</div>
+        <p>Note: at β = 0 (center), sinc(0) = 1, so I = A² (maximum). Zeros occur whenever sin(β) = 0 and β ≠ 0, i.e., β = ±1, ±2, ...</p>
+      </section>
+
+      <section id="minima">
+        <h2>Minima &amp; Secondary Maxima</h2>
+        <h3>Dark Minima</h3>
+        <div class="formula-display">a sin θ<sub>m</sub> = mλ,  m = ±1, ±2, ±3, …</div>
+        <p>Screen positions (small-angle approximation):</p>
+        <div class="formula-display">y<sub>m</sub> ≈ mλL / a</div>
+
+        <h3>Central Maximum</h3>
+        <p>Width of the central maximum (distance between first minima on each side):</p>
+        <div class="formula-display">W<sub>central</sub> = 2λL / a</div>
+
+        <h3>Secondary Maxima</h3>
+        <p>Approximate positions (midway between minima):</p>
+        <div class="formula-display">a sin θ ≈ (m + ½)λ,  m = ±1, ±2, …</div>
+        <p>Intensities of secondary maxima: ~4.7%, 1.7%, 0.83%, … of the central peak.</p>
+
+        <h3>Diagram</h3>
+        <canvas id="envelope-canvas" width="560" height="200" style="width:100%;border-radius:8px;border:1px solid #30363d;background:#050810;display:block;margin-top:1rem"></canvas>
+      </section>
+
+      <section id="parameters">
+        <h2>Parameter Effects</h2>
+        <table class="effects-table">
+          <thead><tr><th>Parameter</th><th>Increase Effect</th><th>Decrease Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Slit width <em>a</em></td><td>Narrower pattern (less diffraction)</td><td>Wider pattern (more diffraction)</td></tr>
+            <tr><td>Wavelength λ</td><td>Wider pattern (longer waves diffract more)</td><td>Narrower pattern</td></tr>
+            <tr><td>Screen distance L</td><td>Pattern expands linearly</td><td>Pattern compresses</td></tr>
+            <tr><td>Amplitude A</td><td>Brighter (I ∝ A²)</td><td>Dimmer</td></tr>
+          </tbody>
+        </table>
+        <p>Key ratio: when <strong>a ≫ λ</strong>, diffraction is negligible (geometric optics). When <strong>a ~ λ</strong>, diffraction dominates.</p>
+      </section>
+
+      <section id="controls">
+        <h2>Controls Guide</h2>
+        <table class="controls-table">
+          <thead><tr><th>Control</th><th>Range</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Wavelength λ</td><td>380–750 nm</td><td>Color and pattern width</td></tr>
+            <tr><td>Slit Width a</td><td>0.01–1.0 mm</td><td>Diffraction spread (inverse)</td></tr>
+            <tr><td>Screen Distance L</td><td>0.1–2.0 m</td><td>Scales all pattern dimensions</td></tr>
+            <tr><td>Amplitude A</td><td>0.1–2.0</td><td>Overall brightness</td></tr>
+            <tr><td>Animation Speed</td><td>0.1–3.0×</td><td>Wave propagation speed</td></tr>
+            <tr><td>Animate waves</td><td>on/off</td><td>Freeze/unfreeze wave animation</td></tr>
+            <tr><td>Minima labels</td><td>on/off</td><td>Show/hide m = ±1,±2,… markers</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="experiments">
+        <h2>Guided Experiments</h2>
+        <div class="experiment-cards">
+          <div class="exp-card">
+            <h3>1. Diffraction vs. Slit Width</h3>
+            <p>Set λ = 550 nm, L = 1 m. Vary slit width from 1.0 mm down to 0.05 mm. Observe how the pattern widens dramatically as <em>a</em> decreases. Verify: central max half-width y₁ = λL/a.</p>
+          </div>
+          <div class="exp-card">
+            <h3>2. Wavelength Dependence</h3>
+            <p>Fix a = 0.2 mm, L = 1 m. Sweep wavelength from 380 nm (violet) to 750 nm (red). Red light diffracts more than violet — the pattern widens with λ.</p>
+          </div>
+          <div class="exp-card">
+            <h3>3. Geometric Optics Limit</h3>
+            <p>Set λ = 550 nm. Increase slit width to 1.0 mm. Note the pattern nearly collapses to a single bright bar — the geometric optics regime where a ≫ λ.</p>
+          </div>
+          <div class="exp-card">
+            <h3>4. Secondary Maximum Intensities</h3>
+            <p>Set a = 0.1 mm, L = 1.5 m. Look at the first secondary maximum — it should be about 4.7% as bright as the central peak. Toggle minima labels to identify positions.</p>
+          </div>
+          <div class="exp-card">
+            <h3>5. Far-Field Condition</h3>
+            <p>The Fraunhofer approximation requires L ≫ a²/λ. For a = 0.5 mm, λ = 550 nm: minimum L = (0.5e-3)²/550e-9 ≈ 0.45 m. Try L = 0.1 m and 2.0 m and compare.</p>
+          </div>
+          <div class="exp-card">
+            <h3>6. Missing Orders Connection</h3>
+            <p>Compare with the double-slit simulator. The sinc² envelope you see here is the same envelope that modulates double-slit fringes. When a = d/N, the Nth double-slit order falls exactly on a single-slit minimum — the "missing order."</p>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <script>
+    // Sidebar active-section highlighting
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+
+    // Envelope diagram
+    const canvas = document.getElementById('envelope-canvas');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const PAD = { l:50, r:20, t:20, b:30 };
+    const pw = W - PAD.l - PAD.r;
+    const ph = H - PAD.t - PAD.b;
+
+    ctx.fillStyle = '#050810'; ctx.fillRect(0,0,W,H);
+
+    // Sinc² curve
+    const nPts = pw;
+    function sinc(x){ return Math.abs(x)<1e-10?1:Math.sin(Math.PI*x)/(Math.PI*x); }
+    const betaRange = 3.5; // ±3.5 in β units
+
+    ctx.beginPath();
+    for (let i=0; i<=nPts; i++){
+      const beta = -betaRange + i*(2*betaRange)/nPts;
+      const I    = sinc(beta)*sinc(beta);
+      const px   = PAD.l + i;
+      const py   = PAD.t + ph - I*ph;
+      i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    }
+    ctx.strokeStyle='#00d2ff'; ctx.lineWidth=2; ctx.stroke();
+
+    // Fill
+    ctx.beginPath();
+    ctx.moveTo(PAD.l, PAD.t+ph);
+    for (let i=0;i<=nPts;i++){
+      const beta=-betaRange+i*(2*betaRange)/nPts;
+      const I=sinc(beta)*sinc(beta);
+      ctx.lineTo(PAD.l+i, PAD.t+ph-I*ph);
+    }
+    ctx.lineTo(PAD.l+nPts,PAD.t+ph); ctx.closePath();
+    ctx.fillStyle='rgba(0,210,255,0.12)'; ctx.fill();
+
+    // Minima dashed lines
+    for (let m=-3;m<=3;m++){
+      if(m===0)continue;
+      const beta=m;
+      const px=PAD.l+(beta+betaRange)/(2*betaRange)*pw;
+      ctx.strokeStyle='#f0a04066'; ctx.setLineDash([3,4]); ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(px,PAD.t); ctx.lineTo(px,PAD.t+ph); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#f0a040'; ctx.font='10px monospace'; ctx.textAlign='center';
+      ctx.fillText(`m=${m>0?'+':''}${m}`, px, PAD.t+ph+14);
+    }
+
+    // Axes
+    ctx.strokeStyle='#30363d'; ctx.lineWidth=1; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(PAD.l,PAD.t); ctx.lineTo(PAD.l,PAD.t+ph);
+    ctx.lineTo(PAD.l+pw,PAD.t+ph); ctx.stroke();
+    ctx.fillStyle='#8b949e'; ctx.font='10px monospace'; ctx.textAlign='center';
+    ctx.fillText('β = πa sinθ / λ', PAD.l+pw/2, H-2);
+    ctx.save(); ctx.translate(12,PAD.t+ph/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('I / I₀', 0, 0); ctx.restore();
+    // Center label
+    const cPx = PAD.l+(betaRange)/(2*betaRange)*pw;
+    ctx.fillStyle='#f0c040'; ctx.font='bold 10px monospace'; ctx.textAlign='center';
+    ctx.fillText('m=0', cPx, PAD.t+ph+14);
+  </script>
+</body>
+</html>
