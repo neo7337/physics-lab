@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Standing Waves on a String — Docs</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="back-link">&larr; Physics Lab</a>
+      <strong>Standing Waves on a String</strong>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#overview"    class="nav-link active">Overview</a></li>
+      <li><a href="#history"     class="nav-link">History</a></li>
+      <li><a href="#setup"       class="nav-link">Setup</a></li>
+      <li><a href="#derivation"  class="nav-link">Derivation</a></li>
+      <li><a href="#harmonics"   class="nav-link">Harmonics Table</a></li>
+      <li><a href="#resonance"   class="nav-link">Resonance</a></li>
+      <li><a href="#parameters"  class="nav-link">Parameter Effects</a></li>
+      <li><a href="#controls"    class="nav-link">Controls Guide</a></li>
+      <li><a href="#experiments" class="nav-link">Guided Experiments</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html">Open Simulator &rarr;</a>
+    </div>
+  </nav>
+
+  <main class="doc-main">
+    <article>
+
+      <section id="overview">
+        <h1>Standing Waves on a String</h1>
+        <p class="lead">When two counter-propagating waves of equal frequency and amplitude travel along a stretched string, they superpose to form a <strong>standing wave</strong> — a pattern that oscillates in place, with fixed points of zero displacement (nodes) and points of maximum displacement (antinodes).</p>
+        <p>Standing waves arise naturally whenever a wave reflects off a boundary. On a string fixed at both ends, only certain discrete frequencies can sustain a standing wave — these are the <em>resonant frequencies</em> or <em>harmonics</em> of the string.</p>
+        <p>This simulation models the exact standing wave equation with tunable tension, linear density, string length, harmonic mode, and exponential damping.</p>
+      </section>
+
+      <section id="history">
+        <h2>Historical Background</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="year">~550 BC</span>
+            <div><strong>Pythagoras</strong> observed that plucked strings produce harmonious tones when their lengths are in simple integer ratios — the first quantitative link between mathematics and music.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1636</span>
+            <div><strong>Marin Mersenne</strong> published <em>Harmonie Universelle</em>, deriving what are now called Mersenne's Laws: string frequency is proportional to 1/L, √T, and 1/√μ.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1727</span>
+            <div><strong>Johann Bernoulli</strong> and <strong>Brook Taylor</strong> derived the wave equation for a vibrating string from Newtonian mechanics, showing it admits sinusoidal solutions.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1753</span>
+            <div><strong>Daniel Bernoulli</strong> proposed the superposition principle: any string vibration is a sum of its normal modes (harmonics). This was contested by Euler and d'Alembert for decades.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1787</span>
+            <div><strong>Ernst Chladni</strong> visualized 2D standing wave patterns in thin plates using sand (now called Chladni figures), extending standing wave ideas to 2D surfaces.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1822</span>
+            <div><strong>Joseph Fourier</strong> proved Bernoulli's superposition claim rigorously: any periodic function can be decomposed into a sum of harmonics — founding Fourier analysis.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1864</span>
+            <div><strong>James Clerk Maxwell</strong> showed that electromagnetic waves also form standing waves, leading to the theory of cavity resonators and, eventually, quantum mechanics.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="setup">
+        <h2>Experimental Setup</h2>
+        <pre class="ascii-art">
+  Fixed                                       Fixed
+  wall                                         wall
+   │                                            │
+   █═══════════════════════════════════════════█
+   │  ← ─ ─ ─ ─ ─  L  ─ ─ ─ ─ ─ ─ ─ ─ →  │
+   │                                            │
+   │  Two counter-propagating waves add up:     │
+   │                                            │
+   │  →  A sin(kx − ωt)                         │
+   │  ←  A sin(kx + ωt)                         │
+   │                                            │
+   │  Sum = 2A sin(kx) cos(ωt)  ← standing wave │
+        </pre>
+        <p>Key parameters:</p>
+        <ul>
+          <li><strong>L</strong> — string length (m); sets the allowed wavelengths</li>
+          <li><strong>T</strong> — tension (N); determines the wave speed</li>
+          <li><strong>μ</strong> — linear mass density (kg/m); also affects wave speed</li>
+          <li><strong>n</strong> — harmonic mode number (1 = fundamental, 2 = first overtone, …)</li>
+        </ul>
+        <p>The string is fixed at both ends (Dirichlet boundary conditions: y(0,t) = y(L,t) = 0), which forces the allowed wavelengths to be λ<sub>n</sub> = 2L/n.</p>
+      </section>
+
+      <section id="derivation">
+        <h2>Derivation</h2>
+        <h3>Wave Equation</h3>
+        <p>For a uniform string under tension T with linear density μ, Newton's second law for a small element gives the <strong>1D wave equation</strong>:</p>
+        <div class="formula-display">∂²y/∂t² = (T/μ) · ∂²y/∂x²  =  v² · ∂²y/∂x²</div>
+        <p>where the wave speed is:</p>
+        <div class="formula-display">v = √(T / μ)</div>
+
+        <h3>Boundary Conditions &amp; Normal Modes</h3>
+        <p>With both ends fixed (y = 0 at x = 0 and x = L), the general solution must satisfy:</p>
+        <div class="formula-display">y(0, t) = 0   and   y(L, t) = 0   for all t</div>
+        <p>This restricts the allowed wave numbers to:</p>
+        <div class="formula-display">k<sub>n</sub> = nπ / L,  n = 1, 2, 3, …</div>
+        <p>Corresponding wavelengths:</p>
+        <div class="formula-display">λ<sub>n</sub> = 2L / n</div>
+
+        <h3>Standing Wave Equation</h3>
+        <p>A right-traveling wave A sin(k<sub>n</sub>x − ωt) plus its left-traveling reflection A sin(k<sub>n</sub>x + ωt) superpose to give:</p>
+        <div class="formula-card">
+          <div class="formula-main">y(x, t) = A · sin(nπx / L) · cos(ωt)</div>
+          <div class="formula-sub">ω = 2πf<sub>n</sub>,  f<sub>n</sub> = n · v / (2L)</div>
+        </div>
+        <p>This is a product of a <em>space function</em> sin(nπx/L) and a <em>time function</em> cos(ωt) — the defining property of a standing wave.</p>
+
+        <h3>Mersenne's Laws</h3>
+        <p>Combining f<sub>n</sub> = nv/(2L) and v = √(T/μ), the fundamental frequency is:</p>
+        <div class="formula-card">
+          <div class="formula-main">f₁ = (1 / 2L) √(T / μ)</div>
+          <div class="formula-sub">Frequency ∝ 1/L, ∝ √T, ∝ 1/√μ</div>
+        </div>
+        <p>These are <strong>Mersenne's Laws</strong> — the three relationships known empirically since 1636, now derived from first principles.</p>
+      </section>
+
+      <section id="harmonics">
+        <h2>Harmonics Table</h2>
+        <p>Each harmonic mode n has a distinct spatial pattern with exactly n antinodes and (n + 1) nodes including the endpoints.</p>
+        <table class="params-table">
+          <thead>
+            <tr><th>Mode n</th><th>Name</th><th>Nodes</th><th>Antinodes</th><th>λ<sub>n</sub></th><th>f<sub>n</sub></th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Fundamental</td><td>2 (ends)</td><td>1</td><td>2L</td><td>f₁</td></tr>
+            <tr><td>2</td><td>1st overtone</td><td>3</td><td>2</td><td>L</td><td>2f₁</td></tr>
+            <tr><td>3</td><td>2nd overtone</td><td>4</td><td>3</td><td>2L/3</td><td>3f₁</td></tr>
+            <tr><td>4</td><td>3rd overtone</td><td>5</td><td>4</td><td>L/2</td><td>4f₁</td></tr>
+            <tr><td>n</td><td>(n−1)th overtone</td><td>n+1</td><td>n</td><td>2L/n</td><td>nf₁</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Mode Shapes Diagram</h3>
+        <canvas id="modes-canvas" width="640" height="260"></canvas>
+        <p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px">First four harmonic modes at t = 0. Red dots = nodes, green dots = antinodes.</p>
+
+        <h3>Node Positions</h3>
+        <p>For mode n, nodes occur at:</p>
+        <div class="formula-display">x<sub>node</sub> = k · L / n,  k = 0, 1, 2, …, n</div>
+
+        <h3>Antinode Positions</h3>
+        <p>Antinodes (maximum displacement) occur midway between nodes:</p>
+        <div class="formula-display">x<sub>antinode</sub> = (2k − 1) · L / (2n),  k = 1, 2, …, n</div>
+      </section>
+
+      <section id="resonance">
+        <h2>Resonance</h2>
+        <h3>What is Resonance?</h3>
+        <p>Resonance occurs when a driving force oscillates at exactly a natural frequency of the system. For a string fixed at both ends, the resonant frequencies are f<sub>n</sub> = nf₁ for integer n. At these frequencies, energy builds up efficiently in the standing wave pattern.</p>
+
+        <h3>Quality Factor</h3>
+        <p>A real string loses energy to air resistance and internal friction. The <strong>quality factor Q</strong> describes how sharply resonant the system is:</p>
+        <div class="formula-display">Q = f<sub>n</sub> / Δf</div>
+        <p>where Δf is the full-width at half-maximum of the resonance peak. High Q means narrow resonance and slow decay; low Q means broad resonance and rapid decay.</p>
+        <p>In this simulation, the <em>Damping</em> slider applies exponential amplitude decay e<sup>−γt</sup>, equivalent to a resistive damping force proportional to velocity.</p>
+
+        <h3>Energy</h3>
+        <p>The total mechanical energy stored in the nth mode is:</p>
+        <div class="formula-display">E<sub>n</sub> = ½ μ L ω<sub>n</sub>² A²</div>
+        <p>This is equally split between kinetic energy (when string passes through equilibrium) and potential energy (when string is at maximum displacement), analogous to a simple harmonic oscillator.</p>
+
+        <h3>Real-World Examples</h3>
+        <table class="effects-table">
+          <thead><tr><th>System</th><th>Resonance Mechanism</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Guitar string</td><td>Pluck excites multiple modes; body resonates</td><td>Timbre = harmonic mix</td></tr>
+            <tr><td>Violin</td><td>Bow sustains oscillation via stick-slip friction</td><td>Nearly pure sinusoidal forcing</td></tr>
+            <tr><td>Piano wire</td><td>Hammer impact; sympathetic string resonance</td><td>Overtones color the tone</td></tr>
+            <tr><td>Microwave oven</td><td>EM standing waves in cavity (same math)</td><td>Hot/cold spots at antinodes/nodes</td></tr>
+            <tr><td>Laser cavity</td><td>Light standing waves between mirrors</td><td>Only resonant λ amplified</td></tr>
+            <tr><td>Tacoma Narrows Bridge</td><td>Wind-driven resonance at natural frequency</td><td>Collapsed in 1940</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="parameters">
+        <h2>Parameter Effects</h2>
+        <table class="effects-table">
+          <thead><tr><th>Parameter</th><th>Increase Effect</th><th>Decrease Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Tension T</td><td>Higher wave speed → higher frequencies for all modes</td><td>Lower speed → lower frequencies</td></tr>
+            <tr><td>Linear density μ</td><td>Lower wave speed → lower frequencies (heavier string)</td><td>Higher speed → higher frequencies</td></tr>
+            <tr><td>String length L</td><td>Lower frequencies; more nodes fit in longer string</td><td>Higher frequencies</td></tr>
+            <tr><td>Harmonic n</td><td>More nodes/antinodes; higher frequency (f = nf₁)</td><td>Fewer nodes; lower frequency</td></tr>
+            <tr><td>Amplitude A</td><td>Larger displacement; higher energy (E ∝ A²)</td><td>Smaller displacement</td></tr>
+            <tr><td>Damping γ</td><td>Amplitude decays faster (e<sup>−γt</sup>)</td><td>Slower decay; ideal standing wave</td></tr>
+          </tbody>
+        </table>
+        <p>Key insight: <strong>frequency depends only on v = √(T/μ) and L</strong> — not on amplitude. This is the principle behind tuning a string instrument: tighten (T↑) or shorten (L↓) to raise pitch.</p>
+      </section>
+
+      <section id="controls">
+        <h2>Controls Guide</h2>
+        <table class="controls-table">
+          <thead><tr><th>Control</th><th>Range</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Harmonic mode n</td><td>1 – 8</td><td>Selects which normal mode to display</td></tr>
+            <tr><td>Tension T</td><td>0.1 – 10.0 N</td><td>Wave speed (v = √(T/μ)); scales all frequencies</td></tr>
+            <tr><td>Linear density μ</td><td>0.001 – 0.1 kg/m</td><td>Wave speed (inverse); heavier string → lower pitch</td></tr>
+            <tr><td>String length L</td><td>0.5 – 3.0 m</td><td>Allowed wavelengths; longer string → lower pitch</td></tr>
+            <tr><td>Amplitude A</td><td>0.1 – 2.0</td><td>Displacement scale; no effect on frequency</td></tr>
+            <tr><td>Damping γ</td><td>0 – 0.5</td><td>Exponential decay rate of amplitude over time</td></tr>
+            <tr><td>Animation speed</td><td>0.1 – 3.0×</td><td>Scales simulation time rate</td></tr>
+            <tr><td>Animate</td><td>on/off</td><td>Freeze/unfreeze wave oscillation</td></tr>
+            <tr><td>Show envelope</td><td>on/off</td><td>Dashed envelope ±A sin(nπx/L) showing max displacement</td></tr>
+            <tr><td>Label nodes</td><td>on/off</td><td>Red/green markers at node and antinode positions</td></tr>
+          </tbody>
+        </table>
+        <p>The <strong>frequency spectrum</strong> panel (lower canvas) shows harmonic amplitudes as bars. Only the active mode has nonzero amplitude; in a real instrument, many modes are excited simultaneously.</p>
+      </section>
+
+      <section id="experiments">
+        <h2>Guided Experiments</h2>
+        <div class="experiment-cards">
+          <div class="exp-card">
+            <h3>1. Mersenne's Laws — Tension</h3>
+            <p>Set n=1, μ=0.010 kg/m, L=1.0 m. Note the frequency at T=2 N. Increase T to 8 N (4× increase). Frequency should double (f ∝ √T). Verify: f should be √4 = 2× the original.</p>
+          </div>
+          <div class="exp-card">
+            <h3>2. Mersenne's Laws — Length</h3>
+            <p>Fix T=2 N, μ=0.010 kg/m, n=1. Record f at L=1.0 m. Halve the length to L=0.5 m. Frequency should exactly double (f ∝ 1/L). This is the physics behind placing a finger on a guitar string.</p>
+          </div>
+          <div class="exp-card">
+            <h3>3. Counting Nodes</h3>
+            <p>Step through modes n=1 to n=8. Count the red node dots at each mode — you should find exactly n+1 nodes (including both fixed endpoints) and n green antinode dots, confirming the theory.</p>
+          </div>
+          <div class="exp-card">
+            <h3>4. Damping Decay</h3>
+            <p>Set damping = 0.3, then watch the string amplitude decay exponentially. Switch to damping = 0 and the oscillation persists forever — the ideal undamped case. Real strings decay in about 1–10 seconds depending on material.</p>
+          </div>
+          <div class="exp-card">
+            <h3>5. Higher Harmonics</h3>
+            <p>Select n=6 or n=8. Toggle the envelope to see the sinusoidal shape of the maximum displacement. Note how the frequency is exactly 6× or 8× the fundamental. This integer multiple relationship is what makes musical tones sound harmonic.</p>
+          </div>
+          <div class="exp-card">
+            <h3>6. Heavy vs. Light String</h3>
+            <p>Fix T=2 N, L=1.0 m, n=1. Compare μ=0.001 kg/m (light) vs μ=0.1 kg/m (heavy). The light string vibrates ~10× faster. A cello's thicker strings give lower pitch precisely because μ is larger.</p>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <script>
+    // Sidebar active-section highlighting
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+
+    // Mode shapes diagram
+    (function() {
+      const canvas = document.getElementById('modes-canvas');
+      const ctx    = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.fillStyle = '#050810';
+      ctx.fillRect(0, 0, W, H);
+
+      const modes  = [1, 2, 3, 4];
+      const rowH   = H / modes.length;
+      const PAD_X  = 60;
+      const AMP    = rowH * 0.38;
+      const nPts   = W - 2 * PAD_X;
+      const L      = 1.0;
+
+      modes.forEach((n, idx) => {
+        const cy = rowH * idx + rowH / 2;
+
+        // Row label
+        ctx.fillStyle = '#58a6ff';
+        ctx.font = 'bold 11px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(`n=${n}`, 6, cy + 4);
+
+        // Equilibrium baseline
+        ctx.strokeStyle = '#30363d';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 4]);
+        ctx.beginPath(); ctx.moveTo(PAD_X, cy); ctx.lineTo(W - PAD_X, cy); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // String shape
+        ctx.beginPath();
+        for (let i = 0; i <= nPts; i++) {
+          const xFrac  = i / nPts;
+          const x_phys = xFrac * L;
+          const y      = Math.sin(n * Math.PI * x_phys / L);
+          const px     = PAD_X + i;
+          const py     = cy - y * AMP;
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = '#00d2ff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Nodes (red)
+        for (let k = 0; k <= n; k++) {
+          const x_phys = k * L / n;
+          const px = PAD_X + (x_phys / L) * nPts;
+          ctx.beginPath(); ctx.arc(px, cy, 4, 0, 2 * Math.PI);
+          ctx.fillStyle = '#f85149'; ctx.fill();
+        }
+
+        // Antinodes (green)
+        for (let k = 1; k <= n; k++) {
+          const x_phys = (2 * k - 1) * L / (2 * n);
+          const px = PAD_X + (x_phys / L) * nPts;
+          const py = cy - Math.sin(n * Math.PI * x_phys / L) * AMP;
+          ctx.beginPath(); ctx.arc(px, py, 4, 0, 2 * Math.PI);
+          ctx.fillStyle = '#3fb950'; ctx.fill();
+        }
+
+        // Walls
+        ctx.fillStyle = '#2a3a50';
+        ctx.fillRect(PAD_X - 10, cy - 18, 10, 36);
+        ctx.fillRect(W - PAD_X, cy - 18, 10, 36);
+
+        // Frequency label
+        ctx.fillStyle = '#8b949e';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(`f = ${n}f₁`, W - 4, cy + 4);
+      });
+
+      // Legend
+      ctx.fillStyle = '#f85149'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+      ctx.fillText('● node', 6, H - 6);
+      ctx.fillStyle = '#3fb950';
+      ctx.fillText('● antinode', 70, H - 6);
+    })();
+  </script>
+</body>
+</html>
