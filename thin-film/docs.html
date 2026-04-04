@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thin-Film Interference — Docs</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="back-link">&larr; Physics Lab</a>
+      <strong>Thin-Film Interference</strong>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#overview" class="nav-link active">Overview</a></li>
+      <li><a href="#history" class="nav-link">History</a></li>
+      <li><a href="#physics" class="nav-link">Physics</a></li>
+      <li><a href="#phase-shifts" class="nav-link">Phase Shifts</a></li>
+      <li><a href="#conditions" class="nav-link">Constructive Conditions</a></li>
+      <li><a href="#spectrum" class="nav-link">Reflectance Spectrum</a></li>
+      <li><a href="#examples" class="nav-link">Real Examples</a></li>
+      <li><a href="#controls" class="nav-link">Controls Guide</a></li>
+      <li><a href="#experiments" class="nav-link">Guided Experiments</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html">Open Simulator &rarr;</a>
+    </div>
+  </nav>
+
+  <main class="doc-main">
+    <article>
+
+      <section id="overview">
+        <h1>Thin-Film Interference</h1>
+        <p class="lead">Thin films — soap bubbles, oil slicks, anti-reflective coatings, butterfly wings — produce vivid colors through interference between light reflected from the film's top and bottom surfaces.</p>
+        <p>The color seen depends on the film thickness, the refractive index, and the angle of incidence. Constructive interference brightens certain wavelengths; destructive interference removes others.</p>
+      </section>
+
+      <section id="history">
+        <h2>Historical Background</h2>
+        <div class="timeline">
+          <div class="timeline-item"><span class="year">1665</span><div>Robert Hooke observed colors in thin films of mica and soap bubbles, noting they depended on film thickness.</div></div>
+          <div class="timeline-item"><span class="year">1672</span><div>Isaac Newton studied "Newton's rings" — circular interference fringes between a flat glass plate and a curved lens — and measured thin-film colors precisely.</div></div>
+          <div class="timeline-item"><span class="year">1801</span><div>Thomas Young explained Newton's observations using his wave theory: two reflections separated by an optical path difference produce interference.</div></div>
+          <div class="timeline-item"><span class="year">1870s</span><div>Lord Rayleigh derived the theory of anti-reflection coatings: a quarter-wave layer with n = √(n_glass) eliminates reflection entirely.</div></div>
+          <div class="timeline-item"><span class="year">1940s</span><div>Anti-reflection coatings became standard in cameras, binoculars, and microscopes during and after WWII.</div></div>
+        </div>
+      </section>
+
+      <section id="physics">
+        <h2>Physics</h2>
+        <p>When light hits a thin film, part is reflected at the <strong>top surface</strong> (ray R₁) and part enters the film, travels to the bottom, and reflects back out (ray R₂). These two rays interfere.</p>
+        <p>The optical path difference between R₁ and R₂ is:</p>
+        <div class="formula-display">OPD = 2 · n · t · cos(θₜ)</div>
+        <p>where θₜ is the refraction angle inside the film (from Snell's law: n₀ sinθᵢ = n sinθₜ).</p>
+        <p>The interference depends on the <strong>total phase difference</strong>, which includes the OPD and any phase shifts from reflection.</p>
+      </section>
+
+      <section id="phase-shifts">
+        <h2>Phase Shifts at Interfaces</h2>
+        <p>When light reflects from an interface where it goes from a <strong>lower to higher</strong> refractive index, it acquires a phase shift of <strong>π</strong> (half-wavelength). No phase shift occurs for higher→lower reflection.</p>
+        <table class="effects-table">
+          <thead><tr><th>Situation</th><th>Top surface (air→film)</th><th>Bottom surface (film→sub)</th><th>Net effect</th></tr></thead>
+          <tbody>
+            <tr><td>n_film &gt; n_air, n_sub &gt; n_film</td><td>+π shift</td><td>+π shift</td><td>Shifts cancel — constructive at OPD = mλ</td></tr>
+            <tr><td>n_film &gt; n_air, n_film &gt; n_sub</td><td>+π shift</td><td>no shift</td><td>One shift — constructive at OPD = (m+½)λ</td></tr>
+            <tr><td>n_film &lt; n_air (impossible in air)</td><td>no shift</td><td>depends on n_sub</td><td>Varies</td></tr>
+          </tbody>
+        </table>
+        <p>This simulator automatically detects the phase shift scenario and updates the constructive condition formula accordingly.</p>
+      </section>
+
+      <section id="conditions">
+        <h2>Constructive &amp; Destructive Conditions</h2>
+        <h3>One Phase Flip (most common: air / glass film / glass substrate)</h3>
+        <div class="formula-display">Constructive: 2nt cosθₜ = (m + ½)λ,  m = 0, 1, 2, …</div>
+        <div class="formula-display">Destructive:  2nt cosθₜ = mλ,  m = 1, 2, …</div>
+        <h3>Two Phase Flips (or zero)</h3>
+        <div class="formula-display">Constructive: 2nt cosθₜ = mλ,  m = 1, 2, …</div>
+        <div class="formula-display">Destructive:  2nt cosθₜ = (m + ½)λ,  m = 0, 1, 2, …</div>
+        <h3>Quarter-Wave Anti-Reflection Condition</h3>
+        <p>For a single-layer AR coating with one phase flip, minimum reflectance occurs at:</p>
+        <div class="formula-display">t = λ/(4n)  →  OPD = λ/2  →  R = 0 when n = √(n_glass)</div>
+      </section>
+
+      <section id="spectrum">
+        <h2>Reflectance Spectrum</h2>
+        <p>The simulator plots R(λ) across the full visible spectrum (380–750 nm) simultaneously. Each wavelength has a different OPD/λ ratio, so different wavelengths experience constructive or destructive interference — producing the characteristic colored pattern of soap bubbles and oil films.</p>
+        <p>The reflectance formula used is the <strong>two-beam approximation</strong> (valid when R ≪ 1 at each surface):</p>
+        <div class="formula-display">R = (r₁² + r₂² + 2r₁r₂ cos δ) / (1 + r₁²r₂² + 2r₁r₂ cos δ)</div>
+        <p>where r₁, r₂ are the Fresnel amplitude reflection coefficients at each surface and δ = 2πOPD/λ.</p>
+      </section>
+
+      <section id="examples">
+        <h2>Real-World Examples</h2>
+        <table class="effects-table">
+          <thead><tr><th>System</th><th>n_film</th><th>t (typical)</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Soap bubble</td><td>1.33</td><td>100–1000 nm</td><td>Brilliant colors, black spot where t → 0</td></tr>
+            <tr><td>Oil slick on water</td><td>1.47</td><td>100–2000 nm</td><td>Rainbow swirls; varies with thickness gradients</td></tr>
+            <tr><td>AR coating (MgF₂)</td><td>1.38</td><td>100 nm (λ/4 at 550 nm)</td><td>Reduces glass reflection from 4% to &lt;0.1%</td></tr>
+            <tr><td>Butterfly wing (Morpho)</td><td>~1.56</td><td>~85 nm (multiple layers)</td><td>Brilliant structural blue independent of pigment</td></tr>
+            <tr><td>Newton's rings</td><td>1.0 (air gap)</td><td>varies radially</td><td>Circular concentric dark/bright rings</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="controls">
+        <h2>Controls Guide</h2>
+        <table class="controls-table">
+          <thead><tr><th>Control</th><th>Range</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Wavelength λ</td><td>380–750 nm</td><td>Moves vertical marker on spectrum; updates R readout</td></tr>
+            <tr><td>Film Thickness t</td><td>0–2000 nm</td><td>Shifts all interference peaks; controls color</td></tr>
+            <tr><td>Film Index n</td><td>1.0–3.0</td><td>Changes OPD and Fresnel coefficients</td></tr>
+            <tr><td>Substrate Index n₂</td><td>1.0–3.0</td><td>Changes bottom-surface Fresnel r₂</td></tr>
+            <tr><td>Incident Angle θ</td><td>0–75°</td><td>Reduces OPD via cosθₜ; shifts peaks to shorter λ</td></tr>
+            <tr><td>Animation Speed</td><td>0.1–3.0×</td><td>Ray wave animation speed</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="experiments">
+        <h2>Guided Experiments</h2>
+        <div class="experiment-cards">
+          <div class="exp-card"><h3>1. Anti-Reflection Coating</h3><p>Set n = 1.38 (MgF₂), n₂ = 1.52 (glass), λ = 550 nm. Find the quarter-wave thickness: t = λ/(4n) ≈ 100 nm. Set t = 100 nm and observe R drops to near zero for green light.</p></div>
+          <div class="exp-card"><h3>2. Soap Bubble Colors</h3><p>Set n = 1.33, n₂ = 1.33 (both water/air). Vary t from 0 to 1000 nm. Watch the spectrum oscillate between different colored peaks — mimicking what you see on a soap bubble with thickness variation.</p></div>
+          <div class="exp-card"><h3>3. Oil-on-Water</h3><p>Set n = 1.47 (oil), n₂ = 1.33 (water). Note only one π phase flip occurs (top surface: air→oil). Sweep t through 200–800 nm and observe the shifting rainbow of reflected colors.</p></div>
+          <div class="exp-card"><h3>4. Angle Dependence</h3><p>Set a fixed thickness t = 400 nm, n = 1.5. Increase θ from 0° to 70°. The spectrum shifts to shorter wavelengths (Bragg blueshift) — this is why soap bubble colors change as you tilt them.</p></div>
+          <div class="exp-card"><h3>5. Zero Thickness (Black Film)</h3><p>Set t = 0 nm. With one phase flip: the OPD = 0, which satisfies destructive condition 2nt = 0 = 0·λ, giving R ≈ 0. This is the "black soap film" — no reflection at all near t = 0.</p></div>
+          <div class="exp-card"><h3>6. High-Index Film (TiO₂)</h3><p>Set n = 2.35 (titanium dioxide), t = 60 nm. Quarter-wave at λ ≈ 564 nm. Compare the much higher reflectance range vs. MgF₂ coating. High-n films give stronger interference effects.</p></div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <script>
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
