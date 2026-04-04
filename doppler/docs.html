@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doppler Effect — Docs</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="back-link">&larr; Physics Lab</a>
+      <strong>Doppler Effect</strong>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#overview"    class="nav-link active">Overview</a></li>
+      <li><a href="#history"     class="nav-link">History</a></li>
+      <li><a href="#setup"       class="nav-link">Setup</a></li>
+      <li><a href="#derivation"  class="nav-link">Derivation</a></li>
+      <li><a href="#mach"        class="nav-link">Mach Number &amp; Shock Waves</a></li>
+      <li><a href="#parameters"  class="nav-link">Parameter Effects</a></li>
+      <li><a href="#applications" class="nav-link">Applications</a></li>
+      <li><a href="#controls"    class="nav-link">Controls Guide</a></li>
+      <li><a href="#experiments" class="nav-link">Guided Experiments</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html">Open Simulator &rarr;</a>
+    </div>
+  </nav>
+
+  <main class="doc-main">
+    <article>
+
+      <section id="overview">
+        <h1>The Doppler Effect</h1>
+        <p class="lead">When a source of waves moves relative to an observer, the observed frequency differs from the emitted frequency. A source approaching the observer compresses wavefronts — raising the perceived pitch. A receding source stretches them — lowering the pitch.</p>
+        <p>This applies to all wave types: sound, light, radar, ultrasound, and gravitational waves. The effect is fundamental to astrophysics, medical imaging, weather radar, and everyday experience (a passing ambulance siren).</p>
+        <p>This simulation models the exact Doppler formula with both moving source and moving observer, visualizes the expanding circular wavefronts, and draws the Mach cone when the source exceeds the wave speed.</p>
+      </section>
+
+      <section id="history">
+        <h2>Historical Background</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="year">1842</span>
+            <div><strong>Christian Doppler</strong> published <em>Über das farbige Licht der Doppelsterne</em>, predicting that the color of a star should change depending on whether it approaches or recedes — the first mathematical treatment of what is now called the Doppler effect.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1845</span>
+            <div><strong>Christoph Buys Ballot</strong> tested Doppler's prediction for sound by having musicians ride a train while playing a note — observers on the platform confirmed the predicted pitch shift, the first experimental verification.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1848</span>
+            <div><strong>Hippolyte Fizeau</strong> independently derived the effect for electromagnetic waves and noted that spectral line shifts could measure stellar velocities — the basis of modern radial velocity astronomy.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1887</span>
+            <div><strong>Ernst Mach</strong> photographed the shock wave cone produced by a supersonic bullet, providing the first visual evidence of the "Mach cone" — the acoustic shock wave created when a source exceeds the wave speed.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1929</span>
+            <div><strong>Edwin Hubble</strong> used the Doppler shift of galaxy spectra to discover that galaxies recede at velocities proportional to their distance — Hubble's Law — establishing the expanding universe.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1950s</span>
+            <div>Doppler radar was developed for weather forecasting and aviation, measuring the frequency shift of reflected radio waves to determine wind and precipitation velocities.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">1960s</span>
+            <div>Medical <strong>Doppler ultrasound</strong> was developed, using the frequency shift of reflected sound to measure blood-flow velocities non-invasively — now a routine diagnostic tool.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="setup">
+        <h2>Experimental Setup</h2>
+        <pre class="ascii-art">
+  Top-down view — source S moves right, observer O at rest
+
+  t=0:   wavefront 1 emitted at x₀
+  t=T:   wavefront 2 emitted at x₀ + v_s·T;  wavefront 1 has radius v·T
+
+    ←compressed wavelength→   ←stretched wavelength→
+                    ┌──────────────┐
+         ···  ))))  S →→→→  ((((  ···
+                    └──────────────┘
+              (ahead)         (behind)
+                   O ahead sees higher f
+                   O behind sees lower f
+        </pre>
+        <p>Key quantities:</p>
+        <ul>
+          <li><strong>f<sub>s</sub></strong> — emitted frequency of the source</li>
+          <li><strong>v<sub>s</sub></strong> — source velocity (positive = rightward)</li>
+          <li><strong>v<sub>o</sub></strong> — observer velocity (positive = rightward)</li>
+          <li><strong>v</strong> — wave propagation speed in the medium</li>
+          <li><strong>f<sub>o</sub></strong> — observed frequency</li>
+        </ul>
+        <p><strong>Important:</strong> The Doppler effect for sound depends on velocities relative to the <em>medium</em> (air), not just relative to each other. This distinguishes it from the relativistic Doppler effect for light.</p>
+      </section>
+
+      <section id="derivation">
+        <h2>Derivation</h2>
+        <h3>Moving Source, Stationary Observer</h3>
+        <p>When the source moves at speed v<sub>s</sub> toward the observer, it chases its own wavefronts. The wavelength ahead of the source is compressed:</p>
+        <div class="formula-display">λ<sub>ahead</sub> = (v − v<sub>s</sub>) / f<sub>s</sub></div>
+        <p>The observer encounters these compressed wavefronts at speed v, so the observed frequency is:</p>
+        <div class="formula-display">f<sub>o</sub> = v / λ<sub>ahead</sub> = f<sub>s</sub> · v / (v − v<sub>s</sub>)</div>
+        <p>Behind the source the wavefronts are stretched, giving:</p>
+        <div class="formula-display">f<sub>o,behind</sub> = f<sub>s</sub> · v / (v + v<sub>s</sub>)</div>
+
+        <h3>Moving Observer</h3>
+        <p>When the observer moves toward the source at speed v<sub>o</sub>, they encounter wavefronts at a higher rate — their effective approach speed to each wavefront is (v + v<sub>o</sub>):</p>
+        <div class="formula-display">f<sub>o</sub> = f<sub>s</sub> · (v + v<sub>o</sub>) / v</div>
+
+        <h3>General Formula</h3>
+        <p>Combining both moving source and observer:</p>
+        <div class="formula-card">
+          <div class="formula-main">f<sub>o</sub> = f<sub>s</sub> · (v + v<sub>o</sub>) / (v − v<sub>s</sub>)</div>
+          <div class="formula-sub">
+            v<sub>s</sub>: + when source moves toward observer<br>
+            v<sub>o</sub>: + when observer moves toward source<br>
+            v: wave speed in medium (always positive)
+          </div>
+        </div>
+        <p>The upper signs apply when the relevant party moves <em>toward</em> the other; lower signs when moving <em>away</em>.</p>
+
+        <h3>Wavelength Diagram</h3>
+        <canvas id="doppler-canvas" width="600" height="180"></canvas>
+        <p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px">Compressed wavefronts ahead (blue), stretched behind (orange). Source moving right at M = 0.5.</p>
+      </section>
+
+      <section id="mach">
+        <h2>Mach Number &amp; Shock Waves</h2>
+        <h3>Mach Number</h3>
+        <p>The <strong>Mach number</strong> M is the ratio of source speed to wave speed:</p>
+        <div class="formula-card">
+          <div class="formula-main">M = v<sub>s</sub> / v</div>
+          <div class="formula-sub">M &lt; 1: subsonic · M = 1: sonic · M &gt; 1: supersonic</div>
+        </div>
+
+        <h3>Sonic Singularity (M = 1)</h3>
+        <p>When M = 1, the source keeps pace with its own wavefronts. All wavefronts pile up directly ahead of the source, creating an infinitely compressed wavefront. The formula gives f<sub>o</sub> → ∞ directly ahead — a singularity.</p>
+
+        <h3>Supersonic — Mach Cone (M &gt; 1)</h3>
+        <p>When M &gt; 1, the source outruns its wavefronts. The wavefronts form a conical envelope — the <strong>Mach cone</strong> or shock wave. The half-angle θ of the cone is:</p>
+        <div class="formula-card">
+          <div class="formula-main">sin θ = v / v<sub>s</sub> = 1 / M</div>
+          <div class="formula-sub">θ decreases as M increases; narrow cone = very supersonic</div>
+        </div>
+        <p>The observer hears <em>nothing</em> until the shock wave passes — then experiences a sudden pressure jump (a "sonic boom" for aircraft). Behind the Mach cone, the source has already passed and the observed frequency is:</p>
+        <div class="formula-display">f<sub>o,behind</sub> = f<sub>s</sub> · v / (v + v<sub>s</sub>)</div>
+
+        <h3>Mach Cone Angles by Speed</h3>
+        <table class="params-table">
+          <thead><tr><th>M</th><th>v<sub>s</sub> (in air, 343 m/s)</th><th>Cone half-angle θ</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>1.0</td><td>343 m/s</td><td>90° (flat)</td><td>Just sonic</td></tr>
+            <tr><td>1.5</td><td>515 m/s</td><td>41.8°</td><td>Fast jet</td></tr>
+            <tr><td>2.0</td><td>686 m/s</td><td>30.0°</td><td>F-22 Raptor</td></tr>
+            <tr><td>3.0</td><td>1029 m/s</td><td>19.5°</td><td>SR-71 Blackbird</td></tr>
+            <tr><td>5.0</td><td>1715 m/s</td><td>11.5°</td><td>Hypersonic</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="parameters">
+        <h2>Parameter Effects</h2>
+        <table class="effects-table">
+          <thead><tr><th>Parameter</th><th>Increase Effect</th><th>Decrease Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Source freq f<sub>s</sub></td><td>Higher pitch everywhere; all f<sub>o</sub> scale proportionally</td><td>Lower pitch everywhere</td></tr>
+            <tr><td>Source vel v<sub>s</sub></td><td>f<sub>o</sub> ahead increases; f<sub>o</sub> behind decreases; M rises</td><td>Less shift; M falls</td></tr>
+            <tr><td>Observer vel v<sub>o</sub> (toward source)</td><td>Observer frequency rises</td><td>Observer moves away → frequency falls</td></tr>
+            <tr><td>Wave speed v</td><td>Less compression for same v<sub>s</sub>; Mach cone widens</td><td>More compression; cone narrows; singularity sooner</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Key asymmetry:</strong> A source approaching at 200 m/s (in 343 m/s air) gives a different frequency shift than an observer approaching at 200 m/s — the formula is <em>not</em> symmetric. This is because the Doppler formula involves velocities relative to the medium, not each other.</p>
+      </section>
+
+      <section id="applications">
+        <h2>Real-World Applications</h2>
+        <table class="effects-table">
+          <thead><tr><th>Application</th><th>Wave type</th><th>What shifts</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td>Radar speed gun</td><td>Radio/microwave</td><td>Reflected f shift</td><td>Measure vehicle speed</td></tr>
+            <tr><td>Weather Doppler radar</td><td>Radio</td><td>Shift from rain droplets</td><td>Wind &amp; storm velocity maps</td></tr>
+            <tr><td>Medical ultrasound</td><td>Sound (~MHz)</td><td>Shift from blood cells</td><td>Blood flow rate &amp; direction</td></tr>
+            <tr><td>Stellar spectroscopy</td><td>Light</td><td>Spectral line positions</td><td>Radial velocity of stars/galaxies</td></tr>
+            <tr><td>Hubble's Law</td><td>Light</td><td>Cosmological redshift</td><td>Universe expansion rate</td></tr>
+            <tr><td>Exoplanet detection</td><td>Light</td><td>Tiny stellar wobble</td><td>Infer orbiting planet mass</td></tr>
+            <tr><td>GPS satellites</td><td>Radio</td><td>Relativistic Doppler</td><td>Must correct for velocity &amp; gravity</td></tr>
+            <tr><td>Bat echolocation</td><td>Sound (~40–100 kHz)</td><td>Shift from prey motion</td><td>Detect and track insects</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="controls">
+        <h2>Controls Guide</h2>
+        <table class="controls-table">
+          <thead><tr><th>Control</th><th>Range</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td>Source Frequency f<sub>s</sub></td><td>20–2000 Hz</td><td>Sets emitted frequency; scales all observed frequencies proportionally</td></tr>
+            <tr><td>Source Velocity v<sub>s</sub></td><td>−400 to +400 m/s</td><td>Positive = rightward; compresses wavefronts ahead, stretches behind</td></tr>
+            <tr><td>Observer Velocity v<sub>o</sub></td><td>−200 to +200 m/s</td><td>Positive = rightward; observer on right: moving right = away from source</td></tr>
+            <tr><td>Wave Speed v</td><td>100–600 m/s</td><td>Speed of wave in medium; 343 m/s = room-temperature air</td></tr>
+            <tr><td>Animation Speed</td><td>0.1–3.0×</td><td>Scales simulation time rate</td></tr>
+            <tr><td>Animate</td><td>on/off</td><td>Pause/resume wavefront animation</td></tr>
+            <tr><td>Show wavefronts</td><td>on/off</td><td>Toggle circular wavefront rings</td></tr>
+            <tr><td>Show Mach cone</td><td>on/off</td><td>Toggle shock wave cone (visible only when M &gt; 1)</td></tr>
+          </tbody>
+        </table>
+        <p>The <strong>frequency comparison</strong> graph shows four bars: source frequency, observed frequency directly ahead of the source, directly behind, and at the observer's current position.</p>
+        <p>The formula panel displays live computed values for Mach number, Mach cone angle, and all three observed frequencies.</p>
+      </section>
+
+      <section id="experiments">
+        <h2>Guided Experiments</h2>
+        <div class="experiment-cards">
+          <div class="exp-card">
+            <h3>1. Classic Pitch Shift</h3>
+            <p>Set f<sub>s</sub>=440 Hz, v=343 m/s. Increase source velocity to 100 m/s. Compare "f ahead" vs "f behind" in the graph. The pitch ahead rises to ~577 Hz; behind it drops to ~347 Hz. This is the ambulance/train effect.</p>
+          </div>
+          <div class="exp-card">
+            <h3>2. Sonic Singularity</h3>
+            <p>Slowly increase v<sub>s</sub> toward 343 m/s (matching the wave speed). Watch "f ahead" climb rapidly toward infinity as M → 1. At exactly M=1 the formula breaks down — the source outruns its own wavefronts.</p>
+          </div>
+          <div class="exp-card">
+            <h3>3. Mach Cone</h3>
+            <p>Set v<sub>s</sub> = 500 m/s (M ≈ 1.46 in 343 m/s air). A red dashed Mach cone appears. Increase v<sub>s</sub> further — the cone angle θ = arcsin(1/M) becomes narrower. Verify: at v<sub>s</sub>=686 m/s (M=2), θ = 30°.</p>
+          </div>
+          <div class="exp-card">
+            <h3>4. Source vs. Observer Asymmetry</h3>
+            <p>Set v=343 m/s. Compare: (a) v<sub>s</sub>=100 m/s, v<sub>o</sub>=0 vs. (b) v<sub>s</sub>=0, v<sub>o</sub>=100 m/s. The observed frequencies differ — proving the formula is not symmetric in source and observer velocity.</p>
+          </div>
+          <div class="exp-card">
+            <h3>5. Wavefront Compression Visualization</h3>
+            <p>Enable wavefronts, set v<sub>s</sub>=150 m/s. Watch the rings bunch up ahead of the source and stretch out behind. The spacing between rings (λ<sub>obs</sub>) is proportional to 1/f<sub>obs</sub> — verify visually.</p>
+          </div>
+          <div class="exp-card">
+            <h3>6. Observer Motion</h3>
+            <p>Set all velocities to zero. Set v<sub>o</sub>=200 m/s (observer moving toward stationary source). Observe the frequency rise. Now try v<sub>s</sub>=200 m/s (source approaching stationary observer). Same relative speed — different frequency due to the asymmetry of sound Doppler.</p>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <script>
+    // Sidebar active-section highlighting
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+
+    // Doppler wavefront diagram
+    (function() {
+      const canvas = document.getElementById('doppler-canvas');
+      const ctx    = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.fillStyle = '#050810'; ctx.fillRect(0, 0, W, H);
+
+      // Draw wavefronts for source moving right at M=0.5
+      const M       = 0.5;
+      const nRings  = 6;
+      const cy      = H / 2;
+      // Source position at time of last emission; each older ring was emitted
+      // one period earlier, so the source was further left.
+      // Let scale: 1 "unit" = 60px; ring at age k·T has radius k·60px
+      const pxPerUnit = 60;
+      const sourceX   = W / 2;
+
+      for (let k = 1; k <= nRings; k++) {
+        const age    = k;               // k periods old
+        const radius = age * pxPerUnit; // ring radius
+        // Source was at position sourceX - k * M * pxPerUnit when emitted
+        const emitX  = sourceX - k * M * pxPerUnit;
+        const alpha  = 0.9 - k * 0.12;
+
+        ctx.beginPath(); ctx.arc(emitX, cy, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = `rgba(88,166,255,${Math.max(0, alpha).toFixed(2)})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Draw source
+      ctx.beginPath(); ctx.arc(sourceX, cy, 8, 0, 2 * Math.PI);
+      ctx.fillStyle = '#58a6ff'; ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('S', sourceX, cy + 3);
+
+      // Arrow
+      ctx.strokeStyle = '#58a6ff'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sourceX + 10, cy); ctx.lineTo(sourceX + 40, cy); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(sourceX + 40, cy);
+      ctx.lineTo(sourceX + 32, cy - 5); ctx.lineTo(sourceX + 32, cy + 5);
+      ctx.closePath(); ctx.fillStyle = '#58a6ff'; ctx.fill();
+
+      // Labels
+      ctx.fillStyle = '#58a6ff'; ctx.font = '10px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('→  v_s = 0.5v', sourceX + 55, cy - 14);
+
+      ctx.fillStyle = '#f0c040';
+      ctx.fillText('compressed', sourceX + nRings * 0.4 * pxPerUnit, cy - 24);
+      ctx.fillStyle = '#f78166';
+      ctx.fillText('stretched', sourceX - nRings * 0.55 * pxPerUnit, cy - 24);
+
+      // Axes
+      ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(20, cy); ctx.lineTo(W - 20, cy); ctx.stroke();
+    })();
+  </script>
+</body>
+</html>
