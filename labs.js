@@ -58,5 +58,15 @@ const LABS = [
     "category": "Waves",
     "path": "doppler",
     "home": "index.html"
+  },
+  {
+    "name": "artemis2",
+    "label": "Artemis 2 Trajectory",
+    "description": "Simulate the crewed lunar free-return trajectory with RK4 two-body gravity (Earth + Moon). Tune TLI burn parameters and toggle between inertial and rotating reference frames.",
+    "icon": "🌙",
+    "version": "1.0.0",
+    "category": "Space",
+    "path": "artemis2",
+    "home": "index.html"
   }
 ];

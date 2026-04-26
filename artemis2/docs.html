@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artemis 2 Trajectory — Docs</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="back-link">&larr; Physics Lab</a>
+      <strong>Artemis 2 Trajectory</strong>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#overview"     class="nav-link active">Overview</a></li>
+      <li><a href="#history"      class="nav-link">Artemis Mission</a></li>
+      <li><a href="#physics"      class="nav-link">Orbital Physics</a></li>
+      <li><a href="#integrator"   class="nav-link">RK4 Integrator</a></li>
+      <li><a href="#frames"       class="nav-link">Reference Frames</a></li>
+      <li><a href="#controls"     class="nav-link">Controls Guide</a></li>
+      <li><a href="#experiments"  class="nav-link">Guided Experiments</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html">Open Simulator &rarr;</a>
+    </div>
+  </nav>
+
+  <main class="doc-main">
+    <article>
+
+      <!-- ── Overview ──────────────────────────────────────────────────── -->
+      <section id="overview">
+        <h1>Artemis 2 Trajectory Simulator</h1>
+        <p class="lead">Artemis II is NASA's first crewed Artemis mission — four astronauts aboard the Orion spacecraft on a free-return trajectory around the Moon. No lunar orbit insertion. The crew swings past the Moon and uses its gravity to slingshot back to Earth.</p>
+        <p>This simulator integrates the spacecraft's motion under Earth and Moon gravity simultaneously using a 4th-order Runge-Kutta (RK4) method with a 60-second timestep. Both an Earth-centered inertial frame and a co-rotating Earth-Moon frame are available. Users can tune the trans-lunar injection (TLI) burn parameters and observe the resulting trajectory in real time.</p>
+        <p>The simulation models a simplified but physically accurate two-body superposition: the spacecraft feels the gravitational pull of both Earth and Moon at every instant. The Moon is treated as a point mass on a circular orbit at its mean orbital distance.</p>
+      </section>
+
+      <!-- ── Mission ───────────────────────────────────────────────────── -->
+      <section id="history">
+        <h2>The Artemis II Mission</h2>
+        <p>Artemis II is the first crewed flight of NASA's Space Launch System (SLS) and Orion spacecraft. Its trajectory follows a <strong>free-return profile</strong>: a precisely targeted lunar flyby that naturally brings the crew back to Earth without requiring any engine burn in deep space.</p>
+
+        <h3>Mission Sequence</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="year">T+0</span>
+            <div><strong>Launch.</strong> SLS Block 1 lifts off from Kennedy Space Center. Orion reaches a ~185 km circular parking orbit in about 8 minutes.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">T+2 h</span>
+            <div><strong>Trans-Lunar Injection (TLI).</strong> The ICPS upper stage fires for ~6 minutes, adding ~3.14 km/s to Orion's velocity. This sets the spacecraft on a trajectory toward the Moon.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">T+3 days</span>
+            <div><strong>Lunar flyby.</strong> Orion passes about 8 900 km above the lunar surface. No engine burn required. The Moon's gravity bends the trajectory back toward Earth.</div>
+          </div>
+          <div class="timeline-item">
+            <span class="year">T+10 days</span>
+            <div><strong>Earth re-entry and splashdown.</strong> Orion re-enters at about 11 km/s, protected by its heat shield, and splashes down in the Pacific Ocean.</div>
+          </div>
+        </div>
+
+        <h3>Why a Free-Return Trajectory?</h3>
+        <p>A free-return trajectory is a carefully chosen path where the spacecraft, if all engines fail after TLI, will still loop around the Moon and come back to Earth safely. This provides an abort option at virtually every point in the mission — a critical safety requirement for crewed missions. The Apollo 13 crew famously used their free-return trajectory after an oxygen tank failure.</p>
+      </section>
+
+      <!-- ── Physics ───────────────────────────────────────────────────── -->
+      <section id="physics">
+        <h2>Orbital Physics</h2>
+
+        <h3>Two-Body Gravity Superposition</h3>
+        <p>The spacecraft's acceleration at position <strong>r</strong> is the vector sum of gravitational accelerations from Earth and Moon:</p>
+        <pre class="equation">
+  a⃗ = −(GM_E / |r⃗|³) r⃗  −  (GM_M / |r⃗ − r⃗_M|³) (r⃗ − r⃗_M)</pre>
+        <p>where <strong>r⃗</strong> is the spacecraft position in Earth-centered inertial coordinates and <strong>r⃗_M</strong> is the Moon's position at the same instant.</p>
+
+        <table class="param-table">
+          <thead><tr><th>Constant</th><th>Symbol</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Earth gravitational parameter</td><td>GM&#8853;</td><td>3.986 × 10¹⁴ m³/s²</td></tr>
+            <tr><td>Moon gravitational parameter</td><td>GM&#9790;</td><td>4.905 × 10¹² m³/s²</td></tr>
+            <tr><td>Earth radius</td><td>R&#8853;</td><td>6 371 km</td></tr>
+            <tr><td>Moon radius</td><td>R&#9790;</td><td>1 737 km</td></tr>
+            <tr><td>Moon orbital radius</td><td>a&#9790;</td><td>384 400 km</td></tr>
+            <tr><td>Moon sidereal period</td><td>T&#9790;</td><td>27.32 days</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Vis-Viva Equation</h3>
+        <p>At any point on a Keplerian orbit, the vis-viva equation relates speed, distance, and orbital energy:</p>
+        <pre class="equation">
+  v² = GM · (2/r − 1/a)</pre>
+        <p>Here <em>r</em> is the current distance from the central body, and <em>a</em> is the semi-major axis. For a circular orbit, <em>a = r</em> and <em>v = √(GM/r)</em>. For the trans-lunar trajectory, <em>a</em> is very large (highly elliptical), so <em>v ≫ v_circular</em> at perigee.</p>
+
+        <h3>Moon Sphere of Influence</h3>
+        <p>The Moon's sphere of influence (SOI) is the region where the Moon's gravity dominates over Earth's. Its radius is approximated by:</p>
+        <pre class="equation">
+  r_SOI = a_Moon · (GM_Moon / GM_Earth)^(2/5)  ≈  66 200 km</pre>
+        <p>Within the SOI, patched-conic methods treat the Moon as the central body. This simulator instead uses full simultaneous two-body superposition, so the SOI circle is a visual reference only — the equations of motion are continuous across it.</p>
+
+        <h3>Trans-Lunar Injection &Delta;v</h3>
+        <p>At the parking orbit (r₀ = R_Earth + 185 km ≈ 6 556 km), the circular velocity is:</p>
+        <pre class="equation">
+  v_circ = √(GM_E / r₀) ≈ 7.79 km/s</pre>
+        <p>After TLI, the spacecraft must reach the Moon's distance (~384 400 km). From vis-viva, the required speed at perigee of the transfer ellipse is:</p>
+        <pre class="equation">
+  a_transfer = (r₀ + A_Moon) / 2  ≈  195 478 km
+  v_TLI = √(GM_E · (2/r₀ − 1/a_transfer)) ≈ 10.93 km/s
+  Δv = v_TLI − v_circ ≈ 3.14 km/s</pre>
+        <p>This is the nominal Artemis 2 TLI burn magnitude. The burn direction is prograde (tangent to the parking orbit) with a small adjustment to target the desired lunar flyby altitude.</p>
+      </section>
+
+      <!-- ── Integrator ────────────────────────────────────────────────── -->
+      <section id="integrator">
+        <h2>RK4 Numerical Integration</h2>
+        <p>The simulator integrates the equations of motion using a <strong>4th-order Runge-Kutta (RK4)</strong> method with a fixed timestep of dt = 60 s. RK4 evaluates the acceleration at four intermediate points within each step, achieving O(dt⁴) local truncation error — far more accurate than simple Euler integration for orbital mechanics.</p>
+
+        <h3>RK4 Algorithm</h3>
+        <pre class="code-block">
+State vector: s = [x, y, vx, vy]
+Derivative:   f(s, t) = [vx, vy, ax(s,t), ay(s,t)]
+
+k1 = f(s,         t        )
+k2 = f(s + k1·dt/2, t + dt/2)
+k3 = f(s + k2·dt/2, t + dt/2)
+k4 = f(s + k3·dt,   t + dt  )
+
+s_next = s + (dt/6)·(k1 + 2k2 + 2k3 + k4)</pre>
+
+        <h3>Timestep Choice</h3>
+        <p>A fixed dt = 60 s is a good balance for this problem. The fastest orbital motion occurs in the parking orbit (period ~90 min), giving ~90 steps per orbit — sufficient for good accuracy. Near the Moon (fast hyperbolic flyby), the period is ~hours, so 60 s is more than adequate.</p>
+        <p>Energy conservation can be checked by computing E = ½v² − GM_E/r at TLI exit (Moon gravity neglected far from Moon). Energy should remain constant to within ~0.01% over the entire trajectory.</p>
+
+        <h3>Time Warp</h3>
+        <p>The simulation runs in real time with the time warp multiplier. At 5 000×, each real second advances the simulation by 5 000 s (~83 minutes). The full ~10-day mission plays out in about 170 real seconds. The integrator always uses the fixed 60 s physics timestep — time warp just determines how many steps are taken per animation frame.</p>
+      </section>
+
+      <!-- ── Frames ─────────────────────────────────────────────────────── -->
+      <section id="frames">
+        <h2>Reference Frames</h2>
+
+        <h3>Inertial Frame (Earth-Centered)</h3>
+        <p>The default view. Earth is fixed at the origin. The Moon orbits counter-clockwise. The spacecraft trajectory is shown as an elongated ellipse that swings past the Moon. This is the frame in which the equations of motion are integrated.</p>
+
+        <h3>Rotating Frame (Earth-Moon Co-rotating)</h3>
+        <p>In this frame, both Earth and Moon are fixed on the horizontal axis. The entire coordinate system rotates at the Moon's angular velocity ω = 2π/T_Moon. To convert inertial position (x, y) to rotating position (x', y'):</p>
+        <pre class="equation">
+  x' =  x·cos(ωt) + y·sin(ωt)
+  y' = −x·sin(ωt) + y·cos(ωt)</pre>
+        <p>In this frame, the free-return trajectory takes on its characteristic figure-8 / horseshoe shape, clearly showing how the spacecraft approaches from behind the Moon (in the rotating frame), swings around, and returns along a different arc.</p>
+        <p>Note: the rotating frame is <em>non-inertial</em>. Extra fictitious forces (Coriolis and centrifugal) appear in Newton's laws written in this frame. These forces are automatically accounted for by applying the coordinate rotation to the inertially-integrated trajectory — we do not compute them explicitly.</p>
+      </section>
+
+      <!-- ── Controls ──────────────────────────────────────────────────── -->
+      <section id="controls">
+        <h2>Controls Guide</h2>
+        <table class="param-table">
+          <thead><tr><th>Control</th><th>Range</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>TLI Δv</td>
+              <td>2.80 – 3.50 km/s</td>
+              <td>Burn magnitude added at TLI. Increase for faster transit (shorter time of flight, closer Moon approach). Decrease to slow the transfer.</td>
+            </tr>
+            <tr>
+              <td>TLI Burn Angle</td>
+              <td>−15° – +15°</td>
+              <td>Offset from the prograde direction. Small positive angles add a radial component; negative angles subtract it. Used to steer the lunar flyby altitude.</td>
+            </tr>
+            <tr>
+              <td>Lunar Flyby Altitude</td>
+              <td>1 000 – 50 000 km</td>
+              <td>Target periselene altitude. Adjusts the radial component of the TLI burn to aim for the specified closest-approach distance to the Moon.</td>
+            </tr>
+            <tr>
+              <td>Time Warp</td>
+              <td>100× – 50 000×</td>
+              <td>Simulation speed multiplier. Higher values play the mission faster; lower values allow inspection of specific trajectory segments.</td>
+            </tr>
+            <tr>
+              <td>Rotating Frame</td>
+              <td>toggle</td>
+              <td>Switch between Earth-centered inertial and Earth-Moon co-rotating reference frame. Trail is cleared on toggle to avoid visual artifacts.</td>
+            </tr>
+            <tr>
+              <td>Velocity vector</td>
+              <td>toggle</td>
+              <td>Shows the spacecraft's velocity direction as a green arrow. Length is fixed (not to scale); only direction is meaningful.</td>
+            </tr>
+            <tr>
+              <td>Moon SOI</td>
+              <td>toggle</td>
+              <td>Draws the Moon's sphere-of-influence boundary (r_SOI ≈ 66 200 km) as a dashed circle.</td>
+            </tr>
+            <tr>
+              <td>Reset</td>
+              <td>button</td>
+              <td>Restarts the simulation from the parking orbit with the current slider values applied.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ── Experiments ────────────────────────────────────────────────── -->
+      <section id="experiments">
+        <h2>Guided Experiments</h2>
+
+        <div class="experiment">
+          <h3>1. The Free-Return Trajectory</h3>
+          <p><strong>Settings:</strong> All defaults. TLI Δv = 3.14 km/s, Burn Angle = 0°, Flyby Alt = 8 900 km, Time Warp = 5 000×.</p>
+          <p>Let the simulation run to completion. Observe that the spacecraft departs Earth, swings past the Moon, and returns to Earth — entirely passively, with no engine burn after TLI. This is the free-return property: the trajectory is a single conic section (nearly) that naturally intersects Earth's atmosphere on the return leg.</p>
+          <p>Note the mission elapsed time (MET) at closest Moon approach and splashdown. Compare to the real Artemis 2 planned timeline (~3 days to Moon, ~10 days total).</p>
+        </div>
+
+        <div class="experiment">
+          <h3>2. Vis-Viva and Orbital Energy</h3>
+          <p><strong>Settings:</strong> Default. Reduce Time Warp to 500× to observe the TLI burn region in detail.</p>
+          <p>Just before TLI (at MET ≈ 2 h), the spacecraft is in a circular parking orbit at 185 km altitude. The formula panel shows speed ≈ 7.79 km/s. After TLI fires, speed jumps to ≈ 10.93 km/s. Verify this with vis-viva:</p>
+          <pre class="equation">
+  r₀ = 6 556 km,   a_transfer = (6556 + 384400)/2 km ≈ 195 478 km
+  v = √(3.986×10¹⁴ · (2/6.556×10⁶ − 1/1.955×10⁸)) ≈ 10.93 km/s</pre>
+          <p>Watch the altitude graph: the Earth altitude line climbs steeply after TLI. At the Moon flyby, read off the minimum Moon distance from the formula panel and compare to your target flyby altitude setting.</p>
+        </div>
+
+        <div class="experiment">
+          <h3>3. Moon SOI Crossing</h3>
+          <p><strong>Settings:</strong> Enable "Show Moon SOI". Default trajectory.</p>
+          <p>Watch the spacecraft approach and cross the Moon's sphere of influence boundary (r_SOI ≈ 66 200 km, shown as a dashed circle). Note the speed at SOI entry — it should be much lower than the TLI injection speed (~1.0 – 1.5 km/s), because the spacecraft has climbed far out of Earth's gravity well.</p>
+          <p>Inside the SOI the Moon's gravity noticeably curves the path. Outside it, the path is dominated by Earth's gravity. The two-body simulation handles this transition smoothly with no patched-conic approximation.</p>
+        </div>
+
+        <div class="experiment">
+          <h3>4. Inertial vs. Rotating Frame</h3>
+          <p><strong>Settings:</strong> Run the trajectory to completion in the inertial frame (default). Reset, then toggle "Rotating frame" and run again.</p>
+          <p>In the <strong>inertial frame</strong>: the trajectory appears as an elongated arc swinging around the Moon. The Moon has moved noticeably along its orbit by the time the spacecraft returns.</p>
+          <p>In the <strong>rotating frame</strong>: both Earth and Moon remain stationary. The spacecraft traces a characteristic figure-8 / horseshoe curve. The two views are describing the same physics — only the coordinate system differs. Neither frame is "more correct."</p>
+        </div>
+
+        <div class="experiment">
+          <h3>5. TLI Burn Angle Sensitivity</h3>
+          <p><strong>Settings:</strong> Set TLI Burn Angle to +5°, then −5°. Keep all other parameters at defaults.</p>
+          <p>A +5° offset adds a slight radial-outward component to the TLI burn. Observe how the trajectory changes: the spacecraft's closest Moon approach may increase or decrease, and the return path to Earth will differ. At ±10–15°, the spacecraft may miss the free-return corridor entirely and not come back to Earth.</p>
+          <p>This illustrates the extreme precision required for real lunar missions. A 0.1° error in the TLI burn direction translates to hundreds of km of error at the Moon.</p>
+        </div>
+
+        <div class="experiment">
+          <h3>6. TLI Δv and Time-of-Flight Tradeoff</h3>
+          <p><strong>Settings:</strong> Vary TLI Δv from 2.85 km/s to 3.35 km/s in 0.1 km/s steps. Record MET at lunar flyby for each case.</p>
+          <p>Lower Δv means a less energetic transfer — the spacecraft travels more slowly and the flight time to the Moon increases. Higher Δv means faster transit but a different flyby geometry. There is a narrow range of Δv values that produce a valid free-return trajectory.</p>
+          <p>This tradeoff is fundamental to mission planning: more Δv costs propellant mass (rocket equation), but less Δv means longer crew exposure to the space environment. Mission planners optimize this balance for each specific launch window.</p>
+        </div>
+
+      </section>
+
+    </article>
+  </main>
+
+</body>
+</html>
