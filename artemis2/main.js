@@ -147,8 +147,8 @@ function computeFullTrajectory() {
     // Apply TLI burn (instantaneous Δv at tliTime)
     if (phase === 0 && t >= tliTime) {
       const speed = Math.sqrt(vx*vx + vy*vy);
-      // Prograde unit vector (perpendicular to radius, in direction of motion)
-      const px = -vy / speed, py = vx / speed;
+      // Prograde unit vector (direction of motion)
+      const px = vx / speed, py = vy / speed;
       // Rotate by burn angle
       const ang = state.tliBurnAngle * Math.PI / 180;
       const bx = px * Math.cos(ang) - py * Math.sin(ang);
@@ -444,8 +444,26 @@ function drawTrajectory() {
   {
     const pt = path[playIdx];
     const { fx, fy } = toFrame(pt.x, pt.y, pt.t);
-    const { px, py } = worldToCanvas(fx, fy, TW, TH);
+    let { px, py } = worldToCanvas(fx, fy, TW, TH);
     const isFinished = playIdx >= path.length - 1;
+
+    // When near/inside Earth's visual radius (e.g. splashdown), clamp dot
+    // to just outside the Earth graphic so the marker stays visible.
+    {
+      const { px: epx, py: epy } = worldToCanvas(0, 0, TW, TH);
+      const { scale } = getViewTransform(TW, TH);
+      const er = Math.max(7 * pr2, R_EARTH * scale);
+      const dx = px - epx, dy = py - epy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < er + 8 * pr2) {
+        // canvas y is inverted: canvas-angle = atan2(-fy, fx)
+        const ang = (Math.abs(fx) > 0.1 || Math.abs(fy) > 0.1)
+          ? Math.atan2(-fy, fx)
+          : Math.atan2(dy, dx);
+        px = epx + (er + 9 * pr2) * Math.cos(ang);
+        py = epy + (er + 9 * pr2) * Math.sin(ang);
+      }
+    }
 
     // Velocity vector
     if (state.showVel && playIdx >= state.tliIdx && !isFinished) {
