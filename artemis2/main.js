@@ -30,6 +30,10 @@ const state = {
   flybyIdx: null,
   splashIdx: null,
 
+  // Derived orbital parameters (set on each trajectory computation)
+  tliOrbElems: null,
+  encounterParams: null,
+
   // Controls
   tliDv: 3140,           // m/s
   tliBurnAngle: 0,       // degrees offset from prograde
@@ -78,6 +82,19 @@ function moonPos(t) {
     x: A_MOON * Math.cos(OMEGA_MOON * t),
     y: A_MOON * Math.sin(OMEGA_MOON * t),
   };
+}
+
+// ─── Orbital Element Computation ─────────────────────────────────────────────
+// Keplerian elements from Cartesian state (Earth-centred). Paper §2.
+function computeOrbitalElements(x, y, vx, vy) {
+  const r   = Math.sqrt(x*x + y*y);
+  const v2  = vx*vx + vy*vy;
+  const E   = v2 / 2 - GM_EARTH / r;             // specific energy (m²/s²)
+  const a   = -GM_EARTH / (2 * E);               // semi-major axis (m); positive = ellipse
+  const h   = Math.abs(x * vy - y * vx);         // specific angular momentum (m²/s)
+  const eSq = 1 + (2 * E * h * h) / (GM_EARTH * GM_EARTH);
+  const e   = Math.sqrt(Math.max(0, eSq));        // eccentricity
+  return { r, v: Math.sqrt(v2), E, a, e };
 }
 
 // ─── RK4 ─────────────────────────────────────────────────────────────────────
@@ -140,6 +157,8 @@ function computeFullTrajectory() {
   let tliIdx   = 0;
   let flybyIdx = null;
   let splashIdx = null;
+  let tliOrbElems    = null;
+  let encounterParams = null;
 
   const MAX_STEPS = 22000; // safety cap (~15.3 days)
 
@@ -163,6 +182,7 @@ function computeFullTrajectory() {
       vy += state.tliDv * by + altCorr * ry;
       phase = 1;
       tliIdx = path.length;
+      tliOrbElems = computeOrbitalElements(x, y, vx, vy);
     }
 
     // Store current state
@@ -189,6 +209,29 @@ function computeFullTrajectory() {
       if (moonDist > prevMoonDist && t > tliTime + 3600) {
         flybyIdx = path.length - 1;
         phase = 2;
+        // Hyperbolic encounter geometry at periapsis (paper §6)
+        const ps   = path.length >= 2 ? path[path.length - 2] : path[path.length - 1];
+        const mf   = moonPos(ps.t);
+        const dxmF = ps.x - mf.x, dymF = ps.y - mf.y;
+        const rM   = Math.sqrt(dxmF*dxmF + dymF*dymF);
+        const vMx  = -OMEGA_MOON * mf.y;           // Moon velocity components
+        const vMy  =  OMEGA_MOON * mf.x;
+        const vRelX = ps.vx - vMx, vRelY = ps.vy - vMy;
+        const vRel2 = vRelX*vRelX + vRelY*vRelY;
+        // v∞² at Moon: energy conservation from periapsis (paper §6.2 eq. 59)
+        const vInfM2 = Math.max(0, vRel2 - 2 * GM_MOON / rM);
+        const vInfM  = Math.sqrt(vInfM2);
+        // Hyperbolic eccentricity (paper eq. 64): e = 1 + r_p·v∞²/µ_M
+        const eHyp = vInfM2 > 0 ? 1 + rM * vInfM2 / GM_MOON : 1;
+        // Turning angle (paper eq. 65): δ = 2 arcsin(1/e)
+        const deltaDeg = vInfM2 > 0
+          ? 2 * Math.asin(Math.min(1, 1 / eHyp)) * (180 / Math.PI)
+          : 0;
+        // Impact parameter (paper eq. 72): b = (µ_M/v∞²)·√(e²−1)
+        const bKm = vInfM2 > 0
+          ? (GM_MOON / vInfM2) * Math.sqrt(Math.max(0, eHyp * eHyp - 1)) / 1000
+          : 0;
+        encounterParams = { vInfM, eHyp, deltaDeg, bKm, perilune_km: (rM - R_MOON) / 1000 };
       }
       prevMoonDist = moonDist;
     }
@@ -212,7 +255,7 @@ function computeFullTrajectory() {
     t += SIM_DT;
   }
 
-  return { path, graphData, tliIdx, flybyIdx, splashIdx };
+  return { path, graphData, tliIdx, flybyIdx, splashIdx, tliOrbElems, encounterParams };
 }
 
 // ─── Reset ────────────────────────────────────────────────────────────────────
@@ -224,8 +267,10 @@ function resetSimulation() {
   state.path      = result.path;
   state.graphData = result.graphData;
   state.tliIdx    = result.tliIdx;
-  state.flybyIdx  = result.flybyIdx;
-  state.splashIdx = result.splashIdx;
+  state.flybyIdx        = result.flybyIdx;
+  state.splashIdx       = result.splashIdx;
+  state.tliOrbElems     = result.tliOrbElems;
+  state.encounterParams = result.encounterParams;
   state.playIdx   = 0;
   state.playFrac  = 0;
 
@@ -726,6 +771,30 @@ function updateFormulaPanel() {
   document.getElementById('frame-label').textContent = state.rotating
     ? 'Rotating Frame — Earth-Moon Co-rotating'
     : 'Inertial Frame — Earth-Centered';
+
+  // ── Transfer orbit parameters (paper §5) ──────────────────────────────────
+  const T = state.tliOrbElems;
+  if (T && T.a > 0) {
+    document.getElementById('p-tli-a').textContent    = fmtKm(T.a);
+    document.getElementById('p-tli-e').textContent    = T.e.toFixed(4);
+    // C₃ = µ_E/a  (paper §5.2 eq. 49; equals −2E for Keplerian orbit)
+    const c3 = GM_EARTH / T.a;
+    document.getElementById('p-tli-c3').textContent   = (c3 / 1e6).toFixed(4) + ' km²/s²';
+    document.getElementById('p-tli-vinf').textContent = (Math.sqrt(c3) / 1000).toFixed(3) + ' km/s';
+  }
+
+  // ── Lunar encounter parameters (paper §6) ──────────────────────────────────
+  const enc = state.encounterParams;
+  if (enc) {
+    document.getElementById('p-enc-vinf').textContent  = (enc.vInfM / 1000).toFixed(3) + ' km/s';
+    document.getElementById('p-enc-e').textContent     = enc.eHyp.toFixed(3);
+    document.getElementById('p-enc-delta').textContent = enc.deltaDeg.toFixed(2) + '°';
+    document.getElementById('p-enc-b').textContent     = enc.bKm.toFixed(0) + ' km';
+    document.getElementById('p-enc-rp').textContent    = enc.perilune_km.toFixed(0) + ' km';
+  }
+
+  // ── ΔV budget reference (paper Table 3) ──────────────────────────────────
+  document.getElementById('p-dv-tli').textContent = (state.tliDv / 1000).toFixed(3) + ' km/s';
 }
 
 // ─── Controls ─────────────────────────────────────────────────────────────────

@@ -133,6 +133,17 @@
       </div>
 
       <div class="formula-block">
+        <div class="formula-title">Transfer Orbit</div>
+        <table class="param-table">
+          <tr><td>a</td><td id="p-tli-a">&mdash;</td></tr>
+          <tr><td>e</td><td id="p-tli-e">&mdash;</td></tr>
+          <tr><td>C&#x2083;</td><td id="p-tli-c3">&mdash;</td></tr>
+          <tr><td>v<sub>&#x221e;</sub></td><td id="p-tli-vinf">&mdash;</td></tr>
+        </table>
+        <div class="formula-note">Computed at TLI burn &mdash; paper &sect;5</div>
+      </div>
+
+      <div class="formula-block">
         <div class="formula-title">Live Readouts</div>
         <table class="param-table">
           <tr><td>MET</td><td id="p-met">&mdash;</td></tr>
@@ -142,6 +153,18 @@
           <tr><td>d<sub>&#9790;</sub></td><td id="p-moon">&mdash;</td></tr>
           <tr><td>Frame</td><td id="p-frame">&mdash;</td></tr>
         </table>
+      </div>
+
+      <div class="formula-block">
+        <div class="formula-title">Lunar Encounter</div>
+        <table class="param-table">
+          <tr><td>v<sub>&#x221e;,M</sub></td><td id="p-enc-vinf">&mdash;</td></tr>
+          <tr><td>e<sub>hyp</sub></td><td id="p-enc-e">&mdash;</td></tr>
+          <tr><td>&delta;</td><td id="p-enc-delta">&mdash;</td></tr>
+          <tr><td>b</td><td id="p-enc-b">&mdash;</td></tr>
+          <tr><td>Perilune</td><td id="p-enc-rp">&mdash;</td></tr>
+        </table>
+        <div class="formula-note">Hyperbolic flyby geometry &mdash; paper &sect;6</div>
       </div>
 
       <div class="formula-block">
@@ -168,6 +191,21 @@
             <span class="event-time" id="ev-splash">&mdash;</span>
           </div>
         </div>
+      </div>
+
+      <div class="formula-block">
+        <div class="formula-title">&Delta;V Budget</div>
+        <table class="param-table">
+          <tr><td>Sim. TLI &Delta;v</td><td id="p-dv-tli">&mdash;</td></tr>
+          <tr><td colspan="2" style="color:var(--text-dim);font-size:0.7rem;padding-top:5px">Paper Table 3 reference</td></tr>
+          <tr><td>HEO ins.</td><td>2 293 m/s</td></tr>
+          <tr><td>TLI (HEO&rarr;)</td><td>330 m/s</td></tr>
+          <tr><td>TCMs est.</td><td>~22 m/s</td></tr>
+          <tr><td>Total</td><td>2 645 m/s</td></tr>
+          <tr><td>ICPS cap.</td><td>3 080 m/s</td></tr>
+          <tr><td>Margin</td><td>+435 m/s</td></tr>
+        </table>
+        <div class="formula-note">Sim. TLI = combined LEO&rarr;trans-lunar boost</div>
       </div>
 
       <div class="formula-block">
